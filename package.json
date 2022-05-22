@@ -1,0 +1,91 @@
+{
+  "name": "UnrealMarket",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@apollo/client": "^3.5.10",
+    "@chakra-ui/react": "^1.8.6",
+    "@coinbase/wallet-sdk": "^3.1.0",
+    "@connext/nxtp-sdk": "^0.1.28",
+    "@connext/nxtp-utils": "^0.1.28",
+    "@emotion/react": "^11.8.1",
+    "@emotion/styled": "^11.8.1",
+    "@ethersproject/contracts": "^5.6.1",
+    "@hop-protocol/sdk": "^0.0.1-beta.316",
+    "@mui/icons-material": "^5.4.4",
+    "@mui/material": "^5.4.4",
+    "@sentry/react": "^6.19.7",
+    "@sentry/tracing": "^6.19.7",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^10.4.9",
+    "@testing-library/user-event": "^12.8.3",
+    "@uauth/js": "^1.1.0",
+    "@uauth/web3modal": "^1.1.0",
+    "@walletconnect/web3-provider": "^1.7.8",
+    "@worldcoin/id": "^0.0.2",
+    "@zk-kit/identity": "^1.4.1",
+    "@zk-kit/protocols": "^1.11.1",
+    "axios": "^0.26.1",
+    "bignumber.js": "^9.0.2",
+    "classnames": "^2.3.1",
+    "cross-fetch": "^3.1.5",
+    "crypto-js": "^4.1.1",
+    "ethers": "^5.6.0",
+    "framer-motion": "^4.1.17",
+    "graphql": "^16.3.0",
+    "ipfs-http-client": "^56.0.1",
+    "js-waku": "^0.23.0",
+    "moment": "^2.29.2",
+    "nft.storage": "^6.2.0",
+    "node-sass": "^6.0.1",
+    "numeral": "^2.0.6",
+    "omit-deep": "^0.3.0",
+    "protobufjs": "^6.11.3",
+    "protons": "^3.0.4",
+    "react": "^17.0.2",
+    "react-cool-inview": "^3.0.1",
+    "react-copy-to-clipboard": "^5.0.4",
+    "react-custom-scroll": "^4.4.0",
+    "react-dom": "^17.0.2",
+    "react-dropzone": "^14.2.1",
+    "react-icons": "^3.11.0",
+    "react-indiana-drag-scroll": "^2.1.0",
+    "react-lottie": "^1.2.3",
+    "react-router-dom": "^6.2.2",
+    "react-scripts": "^4.0.3",
+    "react-share": "^4.4.0",
+    "react-transition-group": "^4.4.2",
+    "sass": "^1.52.0",
+    "store": "^2.0.12",
+    "styled-components": "^5.3.3",
+    "underscore": "^1.13.3",
+    "uuid": "^8.3.2",
+    "wagmi": "^0.2.25",
+    "web-vitals": "^0.2.4",
+    "web3modal": "^1.9.7"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
