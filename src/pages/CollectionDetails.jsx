@@ -47,6 +47,23 @@ export default function CollectionDetails() {
     description: 'Build the future of Finance',
     owner: '0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8',
   };
+
+  const GET_PROFILE_QUERY = gql`
+    query GetProfile($id: String) {
+      profiles(first: 1, where: { profileId_contains: $id }) {
+        id
+        profileId
+        banner
+        dp
+        name
+      }
+    }
+  `;
+
+  const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
+    variables: { id: `0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8` },
+  });
+  let userProfile = getProfileData?.profiles[0];
   return (
     <StyledCollectionDetails
       exit="exit"
@@ -78,7 +95,12 @@ export default function CollectionDetails() {
           <span className="bio">
             <p>{foundCollection?.name}</p>
             <p>{foundCollection?.description}</p>
-            <p>Owned By:{foundCollection?.owner}</p>
+            <span>
+              Owned By:
+              <Link to={`/profile/${userProfile?.id}`}>
+                {userProfile?.name || 'Comrade'}
+              </Link>
+            </span>
           </span>
         </div>
         <span className="tabs">
@@ -108,10 +130,10 @@ const StyledCollectionDetails = styled(motion.div)`
   display: flex;
   flex-flow: column wrap;
 
-  padding: 2rem 6rem;
+  padding: 0rem 6rem;
   gap: 2.5rem;
   @media screen and (max-width: 900px) {
-    padding: 2rem 0rem;
+    padding: 0rem 0rem;
   }
 
   .collection {
@@ -214,6 +236,9 @@ const StyledCollectionDetails = styled(motion.div)`
       align-items: center;
       padding-bottom: 2rem;
       align-items: center;
+      @media screen and (max-width: 900px) {
+        width: 100%;
+      }
       h2 {
         font-size: 1.3rem;
         font-weight: 500;
@@ -230,6 +255,9 @@ const StyledCollectionDetails = styled(motion.div)`
         gap: 0.2rem;
         align-items: center;
         font-size: 1.2rem;
+        @media screen and (max-width: 900px) {
+          width: 100%;
+        }
       }
       .follow-stats {
         display: flex;
@@ -274,11 +302,12 @@ const StyledCollectionDetails = styled(motion.div)`
     grid-column-gap: 1rem;
     grid-row-gap: 1rem;
     @media screen and (max-width: 900px) {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       grid-column-gap: 0.5rem;
       grid-row-gap: 0.5rem;
       width: 100%;
       padding: 0rem 0rem;
+      padding: 1rem;
     }
   }
 `;

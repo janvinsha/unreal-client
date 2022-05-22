@@ -306,7 +306,7 @@ const StyledNftDetails = styled(motion.div)`
   padding: 2rem 4rem;
   gap: 1.5rem;
   @media screen and (max-width: 900px) {
-    padding: 2rem 0rem;
+    padding: 1rem 0rem;
   }
 
   .author {
@@ -333,6 +333,7 @@ const StyledNftDetails = styled(motion.div)`
     box-shadow: 0 0 3px #ccc;
     @media screen and (max-width: 900px) {
       border-radius: 0rem;
+      width: 100%;
     }
   }
   .tabs {
@@ -374,7 +375,8 @@ const StyledNftDetails = styled(motion.div)`
       width: 50%;
       @media screen and (max-width: 900px) {
         width: 100%;
-        height: 18rem;
+        height: 100%;
+        padding-right: 0rem;
       }
       padding-right: 2rem;
 
@@ -404,6 +406,9 @@ const StyledNftDetails = styled(motion.div)`
         flex-flow: column wrap;
         align-items: center;
         text-align: center;
+        @media screen and (max-width: 900px) {
+          width: 100%;
+        }
         .price {
           display: flex;
           flex-flow: column wrap;
@@ -468,6 +473,8 @@ const StyledNftDetails = styled(motion.div)`
     padding: 1rem;
     border-radius: 0.5rem;
     flex-shrink: 0;
+    @media screen and (max-width: 900px) {
+    }
     .history {
       flex-shrink: 0;
       display: flex;

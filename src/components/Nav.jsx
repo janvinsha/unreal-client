@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 
 import styled from 'styled-components';
@@ -40,6 +40,7 @@ const Nav = () => {
         profileId
         banner
         dp
+        name
       }
     }
   `;
@@ -50,6 +51,10 @@ const Nav = () => {
 
   console.log('THIS IS THE PROFILE DATA', getProfileData?.profiles[0]);
   let userProfile = getProfileData?.profiles[0];
+  useEffect(() => {
+    setMenuToggle(false);
+    setShowAccount(false);
+  }, [pathname]);
   return (
     <StyledNav menuToggle={menuToggle} theme_={theme}>
       <motion.div className="left">
@@ -125,34 +130,56 @@ const Nav = () => {
         <div className="menu">
           <span className="account"></span>
           <motion.div className="nav-links">
-            <motion.div className="link" onClick={() => setMenuToggle(false)}>
+            <div className="link">
               <Link
                 to="/explore"
                 className={pathname == '/explore' && 'active'}
               >
                 Explore
               </Link>
-            </motion.div>
-            <motion.div className="link" onClick={() => setMenuToggle(false)}>
+            </div>
+            <div className="link">
               <Link
                 to="/exchange"
                 className={pathname == '/exchange' && 'active'}
               >
                 Exchange
               </Link>
-            </motion.div>
+            </div>
 
-            {isAuthenticated && (
-              <motion.div className="link" onClick={() => setMenuToggle(false)}>
-                <Link
-                  to="/assets"
-                  className={pathname == '/assets' && 'active'}
-                >
-                  {' '}
-                  Assets
-                </Link>
-              </motion.div>
+            <div className="link">
+              <Link
+                to="/airdrop"
+                className={pathname == '/airdrop' && 'active'}
+              >
+                Airdrop
+              </Link>
+            </div>
+
+            <HomeSearch className="link" />
+
+            <button onClick={() => navigate('/create-nft')}>Create</button>
+            {!currentAccount ? (
+              <button onClick={() => connectWallet()} className="plain-btn">
+                Connect
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowAccount(!showAccount)}
+                className="acct-btn"
+              >
+                <img src={userProfile?.dp || bg} />{' '}
+                <p>{userProfile?.name || 'Comrade'}</p>
+              </button>
             )}
+
+            <AccountModal
+              show={showAccount}
+              onClose={() => setShowAccount(false)}
+              disconnect={disconnectWeb3Modal}
+              account={currentAccount}
+              user={userProfile}
+            />
           </motion.div>
         </div>
       </motion.div>
@@ -251,7 +278,7 @@ const StyledNav = styled(motion.div)`
       flex-flow: column wrap;
       align-items: center;
       gap: 1rem;
-      background: #0b172e;
+      background: ${({ theme_ }) => (theme_ ? '#24242b' : '#f2f2f2')};
       position: fixed;
       top: 0;
       right: 0;
@@ -268,6 +295,7 @@ const StyledNav = styled(motion.div)`
       display: flex;
       flex-flow: column wrap;
       align-items: center;
+      gap: 1rem;
       a {
         font-size: 1.3rem;
         &:hover {

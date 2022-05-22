@@ -66,6 +66,9 @@ const StyledAirdrop = styled(motion.div)`
 
   padding: 9rem 10rem;
   gap: 2rem;
+  @media screen and (max-width: 900px) {
+    padding: 1rem 1rem;
+  }
   .desc {
     display: flex;
     flex-flow: column wrap;

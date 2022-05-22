@@ -110,7 +110,6 @@ export default function Profile() {
                 </button>
               )}
               <span className="bio">
-                <p>{foundUser?.id}</p>
                 <p>{foundUser?.name}</p>
                 <p>{foundUser?.bio}</p>
               </span>
@@ -154,6 +153,7 @@ const StyledProfile = styled(motion.div)`
   @media screen and (max-width: 900px) {
     position: absolute;
     padding-bottom: 15%;
+    padding: 0rem 0rem;
   }
   padding: 0rem 4rem;
   .profile {
@@ -181,7 +181,9 @@ const StyledProfile = styled(motion.div)`
       position: sticky;
       top: 0;
       padding: 1rem 2rem;
-
+      @media screen and (max-width: 900px) {
+        padding: 1rem 2rem;
+      }
       .back {
         cursor: pointer;
       }
@@ -315,11 +317,11 @@ const StyledProfile = styled(motion.div)`
     grid-column-gap: 1rem;
     grid-row-gap: 1rem;
     @media screen and (max-width: 900px) {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       grid-column-gap: 0.5rem;
       grid-row-gap: 0.5rem;
       width: 100%;
-      padding: 0rem 0rem;
+      padding: 1rem;
     }
   }
 `;

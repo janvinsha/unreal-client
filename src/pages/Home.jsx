@@ -161,6 +161,9 @@ const StyledHome = styled(motion.div)`
 
   padding: 2rem 6rem;
   gap: 2rem;
+  @media screen and (max-width: 900px) {
+    padding: 1rem 1rem;
+  }
   .desc {
     display: flex;
     flex-flow: column wrap;
@@ -182,11 +185,20 @@ const StyledHome = styled(motion.div)`
     padding: 1rem 10rem;
     justify-content: center;
     padding-bottom: 6rem;
+    @media screen and (max-width: 900px) {
+      width: 100%;
+      padding: 1rem 1rem;
+      align-items: center;
+      flex-direction: column;
+    }
     .img {
       width: 26rem;
       height: 26rem;
       overflow: hidden;
       border-radius: 1rem;
+      @media screen and (max-width: 900px) {
+        width: 100%;
+      }
       img {
         width: 100%;
         height: 100%;
@@ -201,6 +213,9 @@ const StyledHome = styled(motion.div)`
       justify-content: center;
       gap: 1rem;
       text-align: center;
+      @media screen and (max-width: 900px) {
+        width: 100%;
+      }
       button {
         padding: 0.5rem 5rem;
       }
@@ -265,7 +280,7 @@ const StyledHome = styled(motion.div)`
       grid-column-gap: 1rem;
       grid-row-gap: 1rem;
       @media screen and (max-width: 900px) {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(1 1fr);
         grid-column-gap: 0.5rem;
         grid-row-gap: 0.5rem;
         width: 100%;
@@ -292,9 +307,9 @@ const StyledHome = styled(motion.div)`
     grid-column-gap: 1rem;
     grid-row-gap: 1rem;
     @media screen and (max-width: 900px) {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       grid-column-gap: 0.5rem;
-      grid-row-gap: 0.5rem;
+      grid-row-gap: 1rem;
       width: 100%;
       padding: 0rem 0rem;
     }

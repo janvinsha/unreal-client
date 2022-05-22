@@ -61,12 +61,7 @@ const StyledCreateComment = styled.div`
   background: ${({ theme_ }) => (theme_ ? '#24242b' : '#f2f2f2')};
   width: 50%;
   @media screen and (max-width: 900px) {
-    -moz-box-shadow: 0 0 3px #ccc;
-    -webkit-box-shadow: 0 0 3px #ccc;
-    box-shadow: 0 0 3px #ccc;
-    clip-path: inset(0px 0px -15px 0px);
-    border-radius: 0rem;
-
+    width: 100%;
     padding: 0rem 1rem;
   }
 

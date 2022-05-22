@@ -332,7 +332,7 @@ const StyledCreateNft = styled(motion.div)`
       @media screen and (max-width: 900px) {
         width: 100%;
         padding-left: 0rem;
-        display: none;
+        padding: 1rem;
       }
       .listing-price {
         padding: 2rem 0.5rem;

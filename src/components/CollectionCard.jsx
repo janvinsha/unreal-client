@@ -64,19 +64,9 @@ const StyledCollectionCard = styled(motion.div)`
     -webkit-box-shadow: 0 0 4.5px #ccc;
     box-shadow: 0 0 4.5px #ccc;
   }
-  @media screen and (max-width: 900px) {
-    padding: 0.4rem 0.3rem;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    border-radius: 0px;
-  }
 
   overflow: hidden;
   img {
-    @media screen and (max-width: 900px) {
-      height: 10rem;
-      border-radius: 0px;
-    }
     height: 15rem;
     width: 100%;
     object-fit: cover;
@@ -90,9 +80,6 @@ const StyledCollectionCard = styled(motion.div)`
     flex-flow: column wrap;
     padding: 0rem 1rem;
     gap: 0.5rem;
-    @media screen and (max-width: 900px) {
-      gap: 0.1rem;
-    }
 
     .title,
     .sale {
@@ -101,10 +88,6 @@ const StyledCollectionCard = styled(motion.div)`
       justify-content: space-between;
       gap: 0.5rem;
       align-items: center;
-
-      @media screen and (max-width: 900px) {
-        gap: 0.3rem;
-      }
 
       img {
         width: 1.5rem;

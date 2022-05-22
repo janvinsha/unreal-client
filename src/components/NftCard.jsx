@@ -67,19 +67,9 @@ const StyledNftCard = styled(motion.div)`
     -webkit-box-shadow: 0 0 4.5px #ccc;
     box-shadow: 0 0 4.5px #ccc;
   }
-  @media screen and (max-width: 900px) {
-    padding: 0.4rem 0.3rem;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    border-radius: 0px;
-  }
 
   overflow: hidden;
   img {
-    @media screen and (max-width: 900px) {
-      height: 10rem;
-      border-radius: 0px;
-    }
     height: 15rem;
     width: 100%;
     object-fit: cover;
@@ -93,9 +83,6 @@ const StyledNftCard = styled(motion.div)`
     flex-flow: column wrap;
     padding: 0rem 1rem;
     gap: 0.5rem;
-    @media screen and (max-width: 900px) {
-      gap: 0.1rem;
-    }
 
     .nft_title,
     .nft_sale {
@@ -105,19 +92,11 @@ const StyledNftCard = styled(motion.div)`
       gap: 0.5rem;
       align-items: center;
 
-      @media screen and (max-width: 900px) {
-        gap: 0.3rem;
-      }
-
       .nft_author_image {
         width: 1.5rem;
         height: 1.5rem;
         object-fit: cover;
         border-radius: 50%;
-        @media screen and (max-width: 900px) {
-          width: 1rem;
-          height: 1rem;
-        }
       }
     }
     .nft_title {

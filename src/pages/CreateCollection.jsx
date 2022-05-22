@@ -224,6 +224,9 @@ const StyledCreateCollection = styled(motion.div)`
   }
   .banner_div {
     padding: 0rem 6rem;
+    @media screen and (max-width: 900px) {
+      padding: 0rem 1rem;
+    }
     .banner_input {
       display: flex;
       flex-flow: column wrap;
@@ -342,7 +345,7 @@ const StyledCreateCollection = styled(motion.div)`
       @media screen and (max-width: 900px) {
         width: 100%;
         padding-left: 0rem;
-        display: none;
+        padding: 1rem;
       }
       .listing-price {
         padding: 2rem 0.2rem;
