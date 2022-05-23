@@ -20,15 +20,15 @@ window.GlobalStateManager = {
   },
 
   initialize: async function () {
-    const network = TokenListManager.getCurrentNetworkConfig();
+    const network = TokenListManager?.getCurrentNetworkConfig();
 
     // get swapConfig from localstorage
     const swapConfig = store.get('swap');
     const defaultSwapConfig = {
-      from: TokenListManager.findTokenById(network.defaultPair.from),
-      to: TokenListManager.findTokenById(network.defaultPair.to),
-      fromChain: network.name,
-      toChain: network.name,
+      from: TokenListManager.findTokenById(network?.defaultPair.from),
+      to: TokenListManager.findTokenById(network?.defaultPair.to),
+      fromChain: network?.name,
+      toChain: network?.name,
     };
 
     const swap = swapConfig ? swapConfig : defaultSwapConfig;
@@ -39,20 +39,22 @@ window.GlobalStateManager = {
     const bridgeConfig = store.get('bridge');
     const crossChainNetworks = _.filter(
       window.NETWORK_CONFIGS,
-      v => v.enabled && v.crossChainSupported
+      v => v.enabled && v.crossChainSupportedCroos
     );
-    const toChain = crossChainNetworks.find(v => v.chainId !== network.chainId);
+    const toChain = crossChainNetworks.find(
+      v => v.chainId !== network?.chainId
+    );
 
     const fromChain = crossChainNetworks.find(v => {
-      return v.chainId === network.chainId;
+      return v.chainId === network?.chainId;
     });
 
     const defaultBridgeConfig = {
       from: TokenListManager.findTokenById(
-        network.supportedCrossChainTokens[0] || network.defaultPair.from
+        network?.supportedCroosCrossChainTokens[0] || network?.defaultPair.from
       ),
       to: TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0] || toChain.defaultPair.to,
+        toChain?.supportedCroosCrossChainTokens[0] || toChain?.defaultPair.to,
         toChain
       ),
       fromChain,

@@ -17,6 +17,7 @@ body{
 }
 input,textarea{
     font-family: 'Rubik', sans-serif;
+    color:${({ theme }) => (theme ? 'white' : 'black')};
 }
 button{
     font-family: 'Rubik', sans-serif;

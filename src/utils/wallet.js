@@ -33,33 +33,35 @@ window.WalletJS = {
     } else if (false) {
       // TODO init WalletConnect
     }
-
-    EventManager.listenFor(
-      'initiateWalletConnect',
-      this._connectWalletHandler.bind(this),
-    );
   },
 
-  initializeAbis: function() {
+  initializeAbis: function () {
     window.ABIS = {};
 
-    return Promise.all([
-      ['erc20Abi', '/abi/erc20_standard.json'],
-      ['oneSplitAbi', '/abi/test/OneSplit.json'],
-      ['crossChainOneSplitAbi', '/abi/cross-chain/cross-chain-aggregator.json'],
-      ['polygonAbi', '/abi/test/Polygon.json'],
-      ['moonriverAbi', '/abi/test/Moonriver.json'],
-      ['xDaiAbi', '/abi/test/Xdai.json'],
-      ['harmonyAbi', '/abi/test/Harmony.json'],
-      ['auroraAbi', '/abi/test/Aurora.json'],
-      ['bscAbi', '/abi/test/Bsc.json']
-    ].map((data) => {
-      fetch(data[1]).then((resp) => {
-        return resp.json();
-      }).then((abiJson) => {
-        window.ABIS[data[0]] = abiJson;
-      });
-    }));
+    return Promise.all(
+      [
+        ['erc20Abi', '/abi/erc20_standard.json'],
+        ['oneSplitAbi', '/abi/test/OneSplit.json'],
+        [
+          'crossChainOneSplitAbi',
+          '/abi/cross-chain/cross-chain-aggregator.json',
+        ],
+        ['polygonAbi', '/abi/test/Polygon.json'],
+        ['moonriverAbi', '/abi/test/Moonriver.json'],
+        ['xDaiAbi', '/abi/test/Xdai.json'],
+        ['harmonyAbi', '/abi/test/Harmony.json'],
+        ['auroraAbi', '/abi/test/Aurora.json'],
+        ['bscAbi', '/abi/test/Bsc.json'],
+      ].map(data => {
+        fetch(data[1])
+          .then(resp => {
+            return resp.json();
+          })
+          .then(abiJson => {
+            window.ABIS[data[0]] = abiJson;
+          });
+      })
+    );
   },
 
   initListeners: function (provider) {
@@ -77,7 +79,7 @@ window.WalletJS = {
         ) {
           this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
         }
-      }.bind(this),
+      }.bind(this)
     );
 
     provider.on(
@@ -86,7 +88,7 @@ window.WalletJS = {
         console.log('event - disconnect:', providerRpcError);
         this.disconnect();
         EventManager.emitEvent('walletUpdated', 1);
-      }.bind(this),
+      }.bind(this)
     );
 
     provider.on(
@@ -101,15 +103,17 @@ window.WalletJS = {
         }
 
         EventManager.emitEvent('walletUpdated', 1);
-      }.bind(this),
+      }.bind(this)
     );
   },
 
-  getReadOnlyProvider: function(chainId) {
-    var network = chainId ?
-      TokenListManager.getNetworkById(chainId) :
-      TokenListManager.getCurrentNetworkConfig();
-    const provider = new ethers.providers.JsonRpcProvider(network.nodeProviders[0]);
+  getReadOnlyProvider: function (chainId) {
+    var network = chainId
+      ? TokenListManager.getNetworkById(chainId)
+      : TokenListManager.getCurrentNetworkConfig();
+    const provider = new ethers.providers.JsonRpcProvider(
+      network.nodeProviders[0]
+    );
     return provider;
   },
 
@@ -125,10 +129,13 @@ window.WalletJS = {
     }
   },
 
-  getBalance: function(token, optionalNetwork) {
+  getBalance: function (token, optionalNetwork) {
     // if network specified, as long as we connected to any network is fine,
     // if it's not provided, we need to be on the right network to get the right balance
-    if ((!!optionalNetwork && this.isConnectedToAnyNetwork()) || this.isConnected()) {
+    if (
+      (!!optionalNetwork && this.isConnectedToAnyNetwork()) ||
+      this.isConnected()
+    ) {
       // if token not provided, assume the native token
       if (!token || token.native) {
         return this.getDefaultBalance(optionalNetwork);
@@ -142,7 +149,9 @@ window.WalletJS = {
 
   getDefaultBalance: function (optionalNetwork) {
     if (optionalNetwork) {
-      let provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProviders[0]);
+      let provider = new ethers.providers.StaticJsonRpcProvider(
+        optionalNetwork.nodeProviders[0]
+      );
       return provider.getBalance(this.currentAddress());
     } else {
       return this.getProvider().getBalance(this.currentAddress());
@@ -153,7 +162,9 @@ window.WalletJS = {
     let provider;
 
     if (optionalNetwork) {
-      provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProviders[0]);
+      provider = new ethers.providers.StaticJsonRpcProvider(
+        optionalNetwork.nodeProviders[0]
+      );
     } else {
       provider = this.getProvider();
     }
@@ -161,7 +172,7 @@ window.WalletJS = {
     const contract = new Contract(
       tokenContractAddress,
       window.ABIS.erc20Abi,
-      provider,
+      provider
     );
     return await contract.balanceOf(this.currentAddress());
   },
@@ -171,7 +182,7 @@ window.WalletJS = {
       const contract = new Contract(
         tokenAddr,
         window.ABIS.erc20Abi,
-        this.getProvider(),
+        this.getProvider()
       );
       return await contract.name();
     } else {
@@ -184,7 +195,7 @@ window.WalletJS = {
       const contract = new Contract(
         tokenAddr,
         window.ABIS.erc20Abi,
-        this.getProvider(),
+        this.getProvider()
       );
       return await contract.decimals();
     } else {
@@ -197,7 +208,7 @@ window.WalletJS = {
       const contract = new Contract(
         tokenAddr,
         window.ABIS.erc20Abi,
-        this.getProvider(),
+        this.getProvider()
       );
       return await contract.symbol();
     } else {
@@ -260,14 +271,14 @@ window.WalletJS = {
     this._cachedNetworkId = -1;
     this._cachedStrategy = undefined;
     this._cachedWeb3Provider = undefined;
-    Sentry.configureScope((scope) => scope.setUser(null));
+    Sentry.configureScope(scope => scope.setUser(null));
     EventManager.emitEvent('walletUpdated', 1);
   },
 
-  changeNetworkForSwapOrBridge: async function(isSingleSwap) {
+  changeNetworkForSwapOrBridge: async function (isSingleSwap) {
     const CROSS_CHAIN_NETWORKS = _.filter(
       window.NETWORK_CONFIGS,
-      (v) => v.enabled && v.crossChainSupported,
+      v => v.enabled && v.crossChainSupported
     );
     const SINGLE_CHAIN_NETWORKS = _.filter(
       window.NETWORK_CONFIGS,
@@ -279,10 +290,9 @@ window.WalletJS = {
     // we should change if:
     // A) if current network is NOT singleSwap supported && isSwap page
     // B) if current network is NOT crossChain supported && is not isSwap page
-    const shouldChangeNetwork = (
+    const shouldChangeNetwork =
       (!isSingleSwap && !currNetwork.crossChainSupported) ||
-      (isSingleSwap && !currNetwork.singleChainSupported)
-    );
+      (isSingleSwap && !currNetwork.singleChainSupported);
 
     const potentialDefaultNetwork = isSingleSwap
       ? SINGLE_CHAIN_NETWORKS[0]
@@ -303,24 +313,28 @@ window.WalletJS = {
   returnEstimatedReturnAmountDeductedByFees: function (estimateTx) {
     let bridgeFee = window.ethers.utils.formatUnits(
       estimateTx.bridge?.quote?.bridgeFee,
-      estimateTx.bridge?.quote?.decimals,
+      estimateTx.bridge?.quote?.decimals
     );
     bridgeFee = Number.parseFloat(bridgeFee);
 
     let destTxFee = estimateTx.bridge?.quote?.destinationTxFee
-      ? window.ethers.utils.formatUnits(estimateTx.bridge?.quote?.destinationTxFee, estimateTx.bridge?.quote?.decimals)
+      ? window.ethers.utils.formatUnits(
+          estimateTx.bridge?.quote?.destinationTxFee,
+          estimateTx.bridge?.quote?.decimals
+        )
       : 0;
     destTxFee = Number.parseFloat(destTxFee);
 
     let returnAmount = window.ethers.utils.formatUnits(
       estimateTx.estimate.returnAmount,
-      estimateTx.bridge?.quote?.decimals,
+      estimateTx.bridge?.quote?.decimals
     );
 
     const totalFeeWithoutGas = bridgeFee + destTxFee;
 
     // value being displayed to the users => return amount -  destinationTxFee - bridgeFee
-    const estimatedReturnAmountDeductedByFees = Number.parseFloat(returnAmount) - totalFeeWithoutGas;
+    const estimatedReturnAmountDeductedByFees =
+      Number.parseFloat(returnAmount) - totalFeeWithoutGas;
 
     return { estimatedReturnAmountDeductedByFees, totalFeeWithoutGas };
   },
@@ -365,7 +379,7 @@ window.WalletJS = {
           var web3Provider = new ethers.providers.Web3Provider(provider);
 
           return this._saveConnection(web3Provider, 'walletConnect');
-        }.bind(this),
+        }.bind(this)
       )
       .catch(function (e) {
         console.error(e);
@@ -390,21 +404,21 @@ window.WalletJS = {
                     const account = accounts[0];
 
                     var web3Provider = new ethers.providers.Web3Provider(
-                      window.ethereum,
+                      window.ethereum
                     );
                     return this._saveConnection(web3Provider, 'metamask').then(
                       function () {
                         resolve(account);
-                      },
+                      }
                     );
-                  }.bind(this),
+                  }.bind(this)
                 )
                 .catch(function (e) {
                   console.error(e);
                   reject(e);
                 });
             }.bind(this),
-            1000,
+            1000
           );
         }.bind(this);
 
@@ -421,7 +435,7 @@ window.WalletJS = {
             .then(
               function () {
                 requestAccount();
-              }.bind(this),
+              }.bind(this)
             );
         } catch (switchError) {
           // This error code indicates that the chain has not been added to MetaMask.
@@ -434,7 +448,7 @@ window.WalletJS = {
               .then(
                 function () {
                   requestAccount();
-                }.bind(this),
+                }.bind(this)
               )
               .catch(function (e) {
                 console.error(e);
@@ -445,7 +459,7 @@ window.WalletJS = {
             reject(switchError);
           }
         }
-      }.bind(this),
+      }.bind(this)
     );
   },
 };

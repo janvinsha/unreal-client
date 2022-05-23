@@ -66,15 +66,12 @@ export default function NftDetails() {
   useEffect(() => {
     getData();
   }, []);
-  const ContentTopic = `/nft/comments/${nft.tokenId}`;
+  const ContentTopic = `/unreal-market/0/nft-comment/0xE9352F25795c89493e171D5d32A2350A2b3Bd8Fc/proto`;
   const [waku, setWaku] = React.useState(undefined);
   const [wakuStatus, setWakuStatus] = React.useState('None');
   // Using a counter just for the messages to be different
   const [sendCounter, setSendCounter] = React.useState(0);
-  const [messages, setMessages] = React.useState([
-    'Nice NFT here',
-    'Would Like to get it',
-  ]);
+  const [messages, setMessages] = React.useState();
 
   React.useEffect(() => {
     if (!!waku) return;
@@ -179,6 +176,7 @@ export default function NftDetails() {
         profileId
         banner
         dp
+        name
       }
     }
   `;

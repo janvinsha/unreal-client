@@ -54,42 +54,6 @@ window.SwapFn = {
     return Storage.swapSettings;
   },
 
-  getContract() {
-    const signer = Wallet.getProvider().getSigner();
-    const currentNetworkConfig = TokenListManager.getCurrentNetworkConfig();
-    const { chainId } = currentNetworkConfig;
-    const abiName = currentNetworkConfig.abi;
-    const recipient = Wallet.currentAddress();
-    const contract = new Contract(
-      currentNetworkConfig.aggregatorAddress,
-      window.ABIS[abiName],
-      signer
-    );
-
-    return { chainId, contract, recipient };
-  },
-
-  isNetworkGasDynamic() {
-    const network = TokenListManager.getCurrentNetworkConfig();
-    // if no gasAPI supplied, always default to auto;
-    return !network.gasApi;
-  },
-
-  isGasAutomatic() {
-    return (
-      this.isNetworkGasDynamic() ||
-      (!Storage.swapSettings.isCustomGasPrice &&
-        Storage.swapSettings.gasSpeedSetting === 'safeLow')
-    );
-  },
-
-  getGasPrice() {
-    if (Storage.swapSettings.isCustomGasPrice) {
-      return Math.floor(+Storage.swapSettings.customGasPrice);
-    }
-    return Math.floor(+window.GAS_STATS[Storage.swapSettings.gasSpeedSetting]);
-  },
-
   async calculateMinReturn(fromToken, toToken, amount) {
     return this.getExpectedReturn(fromToken, toToken, amount).then(
       actualReturn => {

@@ -32,19 +32,19 @@ window.Storage = {
     var defaultNetwork = _.findWhere(window.NETWORK_CONFIGS, {
       enabled: true,
       singleChainSupported: true,
-    }).name;
+    })?.name;
     var storedNetwork = _.findWhere(window.NETWORK_CONFIGS, {
       name: store.get('selectedNetwork'),
       enabled: true,
     });
     this.selectedNetwork =
-      (storedNetwork && storedNetwork.name) || defaultNetwork;
+      (storedNetwork && storedNetwork?.name) || defaultNetwork;
     this.crossChainEnabled = store.get('crossChainEnabled', false);
     this.cachedTokenLogoUrls = store.get('tokenLogoUrls') || {};
   },
 
   updateNetwork: function (network) {
-    this.selectedNetwork = network.name;
+    this.selectedNetwork = network?.name;
     store.set('selectedNetwork', this.selectedNetwork);
   },
 

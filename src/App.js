@@ -15,7 +15,9 @@ import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 import { GlobalStyle, Nav, Footer } from './components';
 import { gql, useQuery } from '@apollo/client';
+//
 
+///
 import {
   Home,
   CreateNft,
@@ -143,7 +145,7 @@ const App = () => {
         let chainId = await signer.getChainId();
         if (chainId == 80001) {
         } else {
-          alert('CONNECT TO POLYGON MATIC(TESTNET) TO CONTINUE');
+          // alert('CONNECT TO POLYGON MATIC(TESTNET) TO CONTINUE');
         }
 
         // Setup listener! This is for the case where a user comes to our site

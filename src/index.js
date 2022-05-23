@@ -7,8 +7,6 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import client from './apollo';
 
-// import Storage from './utils/storage';
-
 ReactDOM.render(
   <Router>
     <ApolloProvider client={client}>

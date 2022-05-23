@@ -73,6 +73,7 @@ export default function Home() {
         profileId
         banner
         dp
+        name
       }
     }
   `;
@@ -187,7 +188,7 @@ const StyledHome = styled(motion.div)`
     padding-bottom: 6rem;
     @media screen and (max-width: 900px) {
       width: 100%;
-      padding: 1rem 1rem;
+      padding: 1rem 0rem;
       align-items: center;
       flex-direction: column;
     }

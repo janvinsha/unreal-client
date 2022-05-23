@@ -10,6 +10,7 @@ import {
   Modal,
   Text,
 } from '@chakra-ui/react';
+import _ from 'underscore';
 import { TokensModal } from '../components';
 
 // import { useTokenPrice } from 'react-moralis';
@@ -21,6 +22,13 @@ import styled from 'styled-components';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AppContext from '../context/AppContext';
 
+import TokenListManager from '../utils/tokenList';
+import SwapFn from '../utils/swapFn';
+import GlobalStateManager from '../utils/global';
+import { approvalState } from '../constants';
+import Metrics from '../utils/metrics';
+import EventManager from '../utils/events';
+
 function DEX() {
   // const { trySwap, tokenList, getQuote } = useInchDex(chain);
 
@@ -30,131 +38,106 @@ function DEX() {
   const [fromToken, setFromToken] = useState();
   const [toToken, setToToken] = useState();
   const [fromAmount, setFromAmount] = useState();
-  const tokenList = [];
-  // const [quote, setQuote] = useState();
-  // const [currentTrade, setCurrentTrade] = useState();
-  // const { fetchTokenPrice } = useTokenPrice();
-  // const [tokenPricesUSD, setTokenPricesUSD] = useState({});
+  const [toAmount, setToAmount] = useState();
+  const [approveStatus, setApproveStatus] = useState();
+  const [swapDistribution, setSwapDistribution] = useState();
+  const swapConfig = GlobalStateManager.getSwapConfig();
 
-  // console.log(tokenList, 'TOKEN_LIST');
-  // const tokens = useMemo(() => {
-  //   return { ...customTokens, ...tokenList };
-  // }, [customTokens, tokenList]);
-
-  // const fromTokenPriceUsd = useMemo(
-  //   () =>
-  //     tokenPricesUSD?.[fromToken?.['address']]
-  //       ? tokenPricesUSD[fromToken?.['address']]
-  //       : null,
-  //   [tokenPricesUSD, fromToken]
-  // );
-
-  // const toTokenPriceUsd = useMemo(
-  //   () =>
-  //     tokenPricesUSD?.[toToken?.['address']]
-  //       ? tokenPricesUSD[toToken?.['address']]
-  //       : null,
-  //   [tokenPricesUSD, toToken]
-  // );
-
-  // const fromTokenAmountUsd = useMemo(() => {
-  //   if (!fromTokenPriceUsd || !fromAmount) return null;
-  //   return `~$ ${(fromAmount * fromTokenPriceUsd).toFixed(4)}`;
-  // }, [fromTokenPriceUsd, fromAmount]);
-
-  // const toTokenAmountUsd = useMemo(() => {
-  //   if (!toTokenPriceUsd || !quote) return null;
-  //   return `~$ ${(
-  //     Moralis?.Units?.FromWei(quote?.toTokenAmount, quote?.toToken?.decimals) *
-  //     toTokenPriceUsd
-  //   ).toFixed(4)}`;
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [toTokenPriceUsd, quote]);
-
-  // // tokenPrices
-  // useEffect(() => {
-  //   if (!isInitialized || !fromToken || !chain) return null;
-  //   const validatedChain = chain ? getChainIdByName(chain) : chainId;
-  //   const tokenAddress = IsNative(fromToken['address'])
-  //     ? getWrappedNative(validatedChain)
-  //     : fromToken['address'];
-  //   fetchTokenPrice({
-  //     params: { chain: validatedChain, address: tokenAddress },
-  //     onSuccess: price =>
-  //       setTokenPricesUSD({
-  //         ...tokenPricesUSD,
-  //         [fromToken['address']]: price['usdPrice'],
-  //       }),
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [chain, isInitialized, fromToken]);
-
-  // useEffect(() => {
-  //   if (!isInitialized || !toToken || !chain) return null;
-  //   const validatedChain = chain ? getChainIdByName(chain) : chainId;
-  //   const tokenAddress = IsNative(toToken['address'])
-  //     ? getWrappedNative(validatedChain)
-  //     : toToken['address'];
-  //   fetchTokenPrice({
-  //     params: { chain: validatedChain, address: tokenAddress },
-  //     onSuccess: price =>
-  //       setTokenPricesUSD({
-  //         ...tokenPricesUSD,
-  //         [toToken['address']]: price['usdPrice'],
-  //       }),
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [chain, isInitialized, toToken]);
-
-  // useEffect(() => {
-  //   if (!tokens || fromToken) return null;
-  //   setFromToken(tokens[nativeAddress]);
-  // }, [tokens, fromToken]);
-
-  // const ButtonState = useMemo(() => {
-  //   if (chainIds?.[chainId] !== chain)
-  //     return { isActive: false, text: `Switch to ${chain}` };
-
-  //   if (!fromAmount) return { isActive: false, text: 'Enter an amount' };
-  //   if (fromAmount && currentTrade) return { isActive: true, text: 'Swap' };
-  //   return { isActive: false, text: 'Select tokens' };
-  // }, [fromAmount, currentTrade, chainId, chain]);
-
-  // useEffect(() => {
-  //   if (fromToken && toToken && fromAmount)
-  //     setCurrentTrade({ fromToken, toToken, fromAmount, chain });
-  // }, [toToken, fromToken, fromAmount, chain]);
-
-  // useEffect(() => {
-  //   if (currentTrade) getQuote(currentTrade).then(quote => setQuote(quote));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [currentTrade]);
-
-  // const PriceSwap = () => {
-  //   const Quote = quote;
-  //   if (!Quote || !tokenPricesUSD?.[toToken?.['address']]) return null;
-  //   if (Quote?.statusCode === 400) return <>{Quote.message}</>;
-  //   console.log(Quote);
-  //   const { fromTokenAmount, toTokenAmount } = Quote;
-  //   const { symbol: fromSymbol } = fromToken;
-  //   const { symbol: toSymbol } = toToken;
-  //   const pricePerToken = parseFloat(
-  //     tokenValue(fromTokenAmount, fromToken['decimals']) /
-  //       tokenValue(toTokenAmount, toToken['decimals'])
-  //   ).toFixed(6);
-  //   return (
-  //     <Text style={styles.priceSwap}>
-  //       Price:{' '}
-  //       <Text
-  //         style={{ color: 'white' }}
-  //       >{`1 ${toSymbol} = ${pricePerToken} ${fromSymbol} ($${tokenPricesUSD[
-  //         [toToken['address']]
-  //       ].toFixed(6)})`}</Text>
-  //     </Text>
-  //   );
-  // };
   const { theme, accountDetails } = useContext(AppContext);
+  const handleTokenListToggle = target => {
+    if (target == 'from') {
+      setFromModalActive(true);
+    } else {
+      setToModalActive(true);
+    }
+  };
 
+  const network = TokenListManager.getCurrentNetworkConfig();
+  const crossChainTokens = _.map(network?.supportedCrossChainTokens, v =>
+    TokenListManager.findTokenById(v, network)
+  );
+  const tokenList = false // TODO always show reduced list; && this.props.isFrom
+    ? crossChainTokens
+    : undefined;
+
+  const handleTokenChange = (token, target) => {
+    if (target === 'from') {
+      setFromAmount(SwapFn.validateEthValue(token, fromAmount));
+    }
+  };
+
+  const defaultTo = TokenListManager.findTokenById(network?.defaultPair?.to);
+  const defaultFrom = TokenListManager.findTokenById(
+    network?.defaultPair?.from
+  );
+  GlobalStateManager.updateSwapConfig({
+    to: defaultTo,
+    from: defaultFrom,
+    toChain: network?.name,
+    fromChain: network?.name,
+  });
+
+  function handleTransactionComplete(success, hash) {
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
+  }
+
+  function handleConfirm() {
+    const fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
+
+    if (approveStatus === approvalState.APPROVED) {
+      const distBN = _.map(swapDistribution, e =>
+        window.ethers.utils.parseUnits(`${e}`, 'wei')
+      );
+      SwapFn.performSwap(defaultFrom, defaultTo, fromAmountBN, distBN)
+        .then(nonce => {
+          console.log(nonce);
+
+          handleTransactionComplete(true, nonce);
+
+          Metrics.track('swap-complete', {
+            from: defaultFrom,
+            to: defaultTo,
+            fromAmount,
+          });
+        })
+        .catch(e => {
+          console.error('#### swap failed from catch ####', e);
+
+          handleTransactionComplete(false, undefined);
+        });
+    } else {
+      SwapFn.performApprove(defaultFrom, fromAmountBN)
+        .then(confirmedTransaction => {
+          Metrics.track('approve-complete', {
+            from: defaultFrom,
+            fromAmount: fromAmount,
+          });
+          onApproveComplete(approvalState.APPROVED);
+        })
+        .catch(e => {
+          console.error('#### approve failed from catch ####', e);
+          console.error(e);
+        });
+    }
+  }
+
+  function onApproveComplete(approveStatus) {}
+  function onSwapEstimateComplete(
+    ofromAmount,
+    otoAmount,
+    dist,
+    oavailBalBN,
+    oapproveStatus
+  ) {
+    if (ofromAmount === fromAmount && otoAmount === toAmount) {
+      return;
+    }
+    setFromAmount(ofromAmount);
+    setToAmount(otoAmount);
+    setSwapDistribution(dist);
+
+    setApproveStatus(oapproveStatus);
+  }
   return (
     <>
       <StyledDex theme_={theme}>
@@ -168,15 +151,15 @@ function DEX() {
                   type="number"
                   placeholder="0.00"
                   className="row-input"
-                  // onChange={e => setFromAmount(e.target.value)}
-                  // value={fromAmount}
+                  onChange={e => setFromAmount(e.target.value)}
+                  value={fromAmount}
                   focusBorderColor="#0b172e"
                 />
                 {/* <h3>{fromTokenAmountUsd}</h3> */}
               </div>
               <button
                 className="token-btn"
-                onClick={() => setFromModalActive(true)}
+                onClick={() => handleTokenListToggle('from')}
               >
                 {/* {fromToken ? ( */}
                 {true ? (
@@ -230,7 +213,7 @@ function DEX() {
               </div>
               <button
                 className="token-btn"
-                onClick={() => setToModalActive(true)}
+                onClick={() => handleTokenListToggle('to')}
                 // type={toToken ? 'default' : 'primary'}
               >
                 {/* {toToken ? ( */}
@@ -280,6 +263,8 @@ function DEX() {
         onClose={() => setFromModalActive(false)}
         setFromToken={setFromToken}
         tokenList={tokenList}
+        handleTokenChange={handleTokenChange}
+        target="from"
       />
       <TokensModal
         title="Select a token"
@@ -287,6 +272,8 @@ function DEX() {
         onClose={() => setToModalActive(false)}
         show={isToModalActive}
         tokenList={tokenList}
+        handleTokenChange={handleTokenChange}
+        target="to"
       />
     </>
   );
