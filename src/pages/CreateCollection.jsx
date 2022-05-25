@@ -182,7 +182,6 @@ const CreateCollection = () => {
             />
 
             <button type="submit">Creat Collection</button>
-            <small className="listing-price">Listing Fee is 0.0025ETH</small>
           </form>
         </div>
       </motion.div>

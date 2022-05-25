@@ -34,19 +34,6 @@ export default {
   async initialize() {},
 
   // this is deprecated after API integration - step 2
-  getBridgeInterface(nonce) {
-    const tx = this.getTx(nonce);
-
-    const bridgeOption = tx.bridge?.route[0]?.bridge;
-
-    if (bridgeOption === 'hop') {
-      return HopUtils;
-    }
-    if (bridgeOption === 'celer') {
-      return CBridgeUtils;
-    }
-    // return Nxtp;
-  },
 
   async getQuotes(
     to,
@@ -310,40 +297,6 @@ export default {
     } catch (e) {
       console.log('Signing error:', e);
     }
-  },
-
-  async claimTokens({
-    fromChain,
-    toChain,
-    userAddress,
-    txId,
-    signature,
-    bridge,
-    relayerFee,
-    useNativeTokenToClaim,
-  }) {
-    const claimTokensResp = await fetchWithRetry(
-      `${baseUrl}/v0/transfer/claim`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fromChain,
-          toChain,
-          userAddress,
-          txId,
-          signature,
-          relayerFee,
-          useNativeTokenToClaim,
-          bridge,
-        }),
-      },
-      3
-    );
-
-    return { claimTokensResp };
   },
 
   async buildNewAllEstimates({

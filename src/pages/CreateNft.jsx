@@ -30,8 +30,14 @@ const CreateNft = ({ show, onClose }) => {
   const hiddenDpInput = React.useRef(null);
   const [dp, setDp] = useState();
 
-  const { theme, createItem, creatingItem, currentAccount, connectWallet } =
-    useContext(AppContext);
+  const {
+    theme,
+    createItem,
+    creatingItem,
+    currentAccount,
+    connectWallet,
+    fetchCollections,
+  } = useContext(AppContext);
 
   const categories = [];
   const handleDpClick = event => {
@@ -106,7 +112,9 @@ const CreateNft = ({ show, onClose }) => {
   });
 
   console.log('HERE ARE THE USERS COLLECTIONS', data);
-  let icollections = [
+
+  let icollections = fetchCollections(currentAccount);
+  let collections = icollections || [
     { label: 'Unreal Collection', value: 'Unreal Collection' },
     { label: 'Ethglobal', value: 'Ethglobal' },
   ];
@@ -190,7 +198,7 @@ const CreateNft = ({ show, onClose }) => {
               label="Collection"
               asterik={true}
               className="border"
-              options={icollections}
+              options={collections}
               defaultValue="Unreal Collection"
               onChange={e => setCollection(e.target.value)}
               theme={theme}
@@ -219,7 +227,7 @@ const CreateNft = ({ show, onClose }) => {
             />
 
             <button type="submit">Creat item</button>
-            <small className="listing-price">Listing Fee is 0.0025ETH</small>
+            <small className="listing-price">Listing Fee is 0.025 ETH</small>
           </form>
         </div>
       </motion.div>

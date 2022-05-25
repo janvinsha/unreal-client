@@ -34,7 +34,7 @@ import AppContext from './context/AppContext';
 
 import marketContract from './utils/marketContract.json';
 
-const MARKET_CONTRACT_ADDRESS = '0xE9352F25795c89493e171D5d32A2350A2b3Bd8Fc';
+const MARKET_CONTRACT_ADDRESS = '0xC601829461D2a431eaB664823990C96AFC215f4d';
 
 const AIRDROP_CONTRACT_ADDRESS = '0x7992D9C75aBf9d0a7823d18f8c2A6346aAAD5d30';
 
@@ -133,19 +133,19 @@ const App = () => {
 
         console.log('Found an authorized account:', account);
         const signer = tProvider.getSigner();
-        // const connectedContract = new ethers.Contract(
-        //   MARKET_CONTRACT_ADDRESS,
-        //   marketContract.abi,
-        //   signer
-        // );
-        // let data = await connectedContract.fetchCollections();
+        const connectedContract = new ethers.Contract(
+          MARKET_CONTRACT_ADDRESS,
+          marketContract.abi,
+          signer
+        );
 
-        // console.log('HERE ARE THE ITEMS', data);
+        // let data = await connectedContract.fetchCollectionsOfAddress(account);
+        // console.log('HERE ARE THE ITEMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS', data);
         console.log('Going to pop wallet now to pay gas...');
         let chainId = await signer.getChainId();
         if (chainId == 80001) {
         } else {
-          // alert('CONNECT TO POLYGON MATIC(TESTNET) TO CONTINUE');
+          alert('CONNECT TO POLYGON MATIC(TESTNET) TO CONTINUE');
         }
 
         // Setup listener! This is for the case where a user comes to our site
@@ -219,15 +219,13 @@ const App = () => {
       console.log(
         'Going to pop wallet now to pay gas..., for creatingCollection'
       );
-      let listingPrice = await connectedContract.getListingPrice();
-      listingPrice = listingPrice.toString();
+
       const tx = await connectedContract.createCollection(
         collection.banner,
         collection.dp,
         collection.name,
         collection.description,
-        collection.tags,
-        { value: listingPrice }
+        collection.tags
       );
       setCreatingCollection(false);
       console.log('Collection Created Successfully', tx);
@@ -371,6 +369,41 @@ const App = () => {
     }
   };
 
+  const fetchNfts = async () => {
+    const wallet = await web3Modal.connect();
+    const tProvider = new ethers.providers.Web3Provider(wallet);
+    const signer = tProvider.getSigner();
+    const connectedContract = new ethers.Contract(
+      MARKET_CONTRACT_ADDRESS,
+      marketContract.abi,
+      signer
+    );
+
+    let da = await connectedContract.fetchMarketItems();
+    return da;
+  };
+  const fetchCollections = async address => {
+    if (currentAccount) {
+      try {
+        const wallet = await web3Modal.connect();
+        const tProvider = new ethers.providers.Web3Provider(wallet);
+        const signer = tProvider.getSigner();
+        const connectedContract = new ethers.Contract(
+          MARKET_CONTRACT_ADDRESS,
+          marketContract.abi,
+          signer
+        );
+
+        let da = await connectedContract.fetchCollectionsOfAddress(address);
+        console.log('HERE ARE THE COLLECTIONS OOO', da);
+        return da.collections;
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -379,12 +412,11 @@ const App = () => {
 
         minting,
         setMinting,
-
+        fetchNfts,
         connectWallet,
         createItem,
         disconnectWeb3Modal,
         hasLoaded,
-        creatingCollection,
         accountDetails,
         isLoggedIn,
         creatingItem,
@@ -403,6 +435,7 @@ const App = () => {
         userProfile,
         buyNft,
         buyingNft,
+        fetchCollections,
       }}
     >
       <div className="App">

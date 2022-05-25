@@ -74,9 +74,18 @@ const EditProfileModal = ({ show, onClose, user }) => {
       let bannerUrl;
       let photo;
       let photoUrl;
+      let tempUrl;
       if (dp) {
         photo = await client.add(dp);
         photoUrl = `https://ipfs.infura.io/ipfs/${photo.path}`;
+        const metadata = await client.store({
+          name: 'Photo',
+          description: ' A photo',
+          image: new File([dp], 'A photo on Unreal Market', {
+            type: dp?.type,
+          }),
+        });
+        tempUrl = metadata.url;
       }
       if (cover) {
         banner = await client.add(cover);
@@ -100,6 +109,7 @@ const EditProfileModal = ({ show, onClose, user }) => {
           'https://bafybeifcdezziul3ebfdc7j2t7ham7ycmeqnxihq55pjph43vzqywiivoa.ipfs.infura-ipfs.io/',
         name,
         bio,
+        tempUrl,
       });
 
       // console.log('IPFS UPLOAD FILE URL', url);
