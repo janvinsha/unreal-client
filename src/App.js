@@ -382,27 +382,6 @@ const App = () => {
     let da = await connectedContract.fetchMarketItems();
     return da;
   };
-  const fetchCollections = async address => {
-    if (currentAccount) {
-      try {
-        const wallet = await web3Modal.connect();
-        const tProvider = new ethers.providers.Web3Provider(wallet);
-        const signer = tProvider.getSigner();
-        const connectedContract = new ethers.Contract(
-          MARKET_CONTRACT_ADDRESS,
-          marketContract.abi,
-          signer
-        );
-
-        let da = await connectedContract.fetchCollectionsOfAddress(address);
-        console.log('HERE ARE THE COLLECTIONS OOO', da);
-        return da.collections;
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-    }
-  };
 
   return (
     <AppContext.Provider
@@ -435,7 +414,6 @@ const App = () => {
         userProfile,
         buyNft,
         buyingNft,
-        fetchCollections,
       }}
     >
       <div className="App">

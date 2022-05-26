@@ -102,7 +102,7 @@ const CreateNft = ({ show, onClose }) => {
 
   const GET_USER_COLLECTIONS_QUERY = gql`
     query GetUserCollections($owner: Bytes) {
-      collections(where: { owner: $owner }) {
+      collections(where: { owner_contains: $owner }) {
         name
       }
     }
@@ -112,12 +112,22 @@ const CreateNft = ({ show, onClose }) => {
   });
 
   console.log('HERE ARE THE USERS COLLECTIONS', data);
+  let foundCollections = [];
 
-  let icollections = fetchCollections(currentAccount);
-  let collections = icollections || [
-    { label: 'Unreal Collection', value: 'Unreal Collection' },
-    { label: 'Ethglobal', value: 'Ethglobal' },
-  ];
+  let collections = data?.collections;
+  let arrayWork = () => {
+    if (collections) {
+      for (let x of collections) {
+        let tempObject = {
+          label: x?.name,
+          value: x?.name,
+        };
+        foundCollections.push(tempObject);
+      }
+    }
+  };
+  arrayWork();
+
   return (
     <StyledCreateNft
       exit="exit"
@@ -198,8 +208,10 @@ const CreateNft = ({ show, onClose }) => {
               label="Collection"
               asterik={true}
               className="border"
-              options={collections}
-              defaultValue="Unreal Collection"
+              options={foundCollections}
+              defaultValue={
+                (foundCollections && foundCollections[0]?.value) || ''
+              }
               onChange={e => setCollection(e.target.value)}
               theme={theme}
               required

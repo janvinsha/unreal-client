@@ -73,12 +73,7 @@ export let sponsors = [
       'We at Covalent believe that access to organized blockchain data can unlock a billion possibilities and so we provide the best single unified API to bring full transparency and visibility to assets across all blockchain networks. With the Covalent API, there is no need to invest developer resources in writing SQL or other queries since granular, decoded, multi-chain data is immediately available for 30+ blockchain networks including Ethereum, BSC, Polygon, Fantom and Avalanche. Covalent is fast becoming the go-to data provider, with the Covalent API powering over 1,000 industry-leading projects such as Zerion, ChainGuardians, 0x and Reef.The Covalent Unified API is the fastest way to get blockchain data for your Chainlink Spring Hackathon project!',
     img: Covalent,
   },
-  {
-    name: 'Spheron',
-    about:
-      'Spheron (previously ArGoApp) makes front-end web deployment easy, effective, and efficient through its blockchain-based platform that takes your web app to the DSNs (Decentralized Storage Networks). Spheron removes the hurdles of centralization and censorship through blockchain, ensuring that your web app is permanently deployed and experiences 99.99% uptime throughout its life.',
-    img: Spheron,
-  },
+
   {
     name: 'Transak',
     about:

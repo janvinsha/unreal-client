@@ -78,7 +78,7 @@ const EditProfileModal = ({ show, onClose, user }) => {
       if (dp) {
         photo = await client.add(dp);
         photoUrl = `https://ipfs.infura.io/ipfs/${photo.path}`;
-        const metadata = await client.store({
+        const metadata = await nftClient.store({
           name: 'Photo',
           description: ' A photo',
           image: new File([dp], 'A photo on Unreal Market', {
