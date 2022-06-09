@@ -136,7 +136,7 @@ export default function Home() {
         </div>
       </div> */}
 
-      <div className="about">
+      {/* <div className="about">
         <h1>Project</h1>
         <span className="about-desc">
           <h3>
@@ -150,7 +150,7 @@ export default function Home() {
             <Sponsor sponsor={sponsor} />
           ))}
         </div>
-      </div>
+      </div> */}
     </StyledHome>
   );
 }

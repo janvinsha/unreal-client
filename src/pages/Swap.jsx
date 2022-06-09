@@ -22,12 +22,12 @@ import styled from 'styled-components';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AppContext from '../context/AppContext';
 
-import TokenListManager from '../utils/tokenList';
-import SwapFn from '../utils/swapFn';
-import GlobalStateManager from '../utils/global';
-import { approvalState } from '../constants';
-import Metrics from '../utils/metrics';
-import EventManager from '../utils/events';
+// import TokenListManager from '../utils/tokenList';
+// import SwapFn from '../utils/swapFn';
+// import GlobalStateManager from '../utils/global';
+// import { approvalState } from '../constants';
+// import Metrics from '../utils/metrics';
+// import EventManager from '../utils/events';
 
 function DEX() {
   // const { trySwap, tokenList, getQuote } = useInchDex(chain);
@@ -41,7 +41,7 @@ function DEX() {
   const [toAmount, setToAmount] = useState();
   const [approveStatus, setApproveStatus] = useState();
   const [swapDistribution, setSwapDistribution] = useState();
-  const swapConfig = GlobalStateManager.getSwapConfig();
+  // const swapConfig = GlobalStateManager.getSwapConfig();
 
   const { theme, accountDetails } = useContext(AppContext);
   const handleTokenListToggle = target => {
@@ -52,96 +52,96 @@ function DEX() {
     }
   };
 
-  const network = TokenListManager.getCurrentNetworkConfig();
-  const crossChainTokens = _.map(network?.supportedCrossChainTokens, v =>
-    TokenListManager.findTokenById(v, network)
-  );
-  const tokenList = false // TODO always show reduced list; && this.props.isFrom
-    ? crossChainTokens
-    : undefined;
+  // const network = TokenListManager.getCurrentNetworkConfig();
+  // const crossChainTokens = _.map(network?.supportedCrossChainTokens, v =>
+  //   TokenListManager.findTokenById(v, network)
+  // );
+  // const tokenList = false // TODO always show reduced list; && this.props.isFrom
+  //   ? crossChainTokens
+  //   : undefined;
 
-  const handleTokenChange = (token, target) => {
-    if (target === 'from') {
-      setFromAmount(SwapFn.validateEthValue(token, fromAmount));
-    }
-  };
+  // const handleTokenChange = (token, target) => {
+  //   if (target === 'from') {
+  //     setFromAmount(SwapFn.validateEthValue(token, fromAmount));
+  //   }
+  // };
 
-  const defaultTo = TokenListManager.findTokenById(network?.defaultPair?.to);
-  const defaultFrom = TokenListManager.findTokenById(
-    network?.defaultPair?.from
-  );
-  GlobalStateManager.updateSwapConfig({
-    to: defaultTo,
-    from: defaultFrom,
-    toChain: network?.name,
-    fromChain: network?.name,
-  });
+  // const defaultTo = TokenListManager.findTokenById(network?.defaultPair?.to);
+  // const defaultFrom = TokenListManager.findTokenById(
+  //   network?.defaultPair?.from
+  // );
+  // GlobalStateManager.updateSwapConfig({
+  //   to: defaultTo,
+  //   from: defaultFrom,
+  //   toChain: network?.name,
+  //   fromChain: network?.name,
+  // });
 
-  function handleTransactionComplete(success, hash) {
-    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
-  }
+  // function handleTransactionComplete(success, hash) {
+  //   EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
+  // }
 
-  function handleConfirm() {
-    const fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
+  // function handleConfirm() {
+  //   const fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
 
-    if (approveStatus === approvalState.APPROVED) {
-      const distBN = _.map(swapDistribution, e =>
-        window.ethers.utils.parseUnits(`${e}`, 'wei')
-      );
-      SwapFn.performSwap(defaultFrom, defaultTo, fromAmountBN, distBN)
-        .then(nonce => {
-          console.log(nonce);
+  //   if (approveStatus === approvalState.APPROVED) {
+  //     const distBN = _.map(swapDistribution, e =>
+  //       window.ethers.utils.parseUnits(`${e}`, 'wei')
+  //     );
+  //     SwapFn.performSwap(defaultFrom, defaultTo, fromAmountBN, distBN)
+  //       .then(nonce => {
+  //         console.log(nonce);
 
-          handleTransactionComplete(true, nonce);
+  //         handleTransactionComplete(true, nonce);
 
-          Metrics.track('swap-complete', {
-            from: defaultFrom,
-            to: defaultTo,
-            fromAmount,
-          });
-        })
-        .catch(e => {
-          console.error('#### swap failed from catch ####', e);
+  //         Metrics.track('swap-complete', {
+  //           from: defaultFrom,
+  //           to: defaultTo,
+  //           fromAmount,
+  //         });
+  //       })
+  //       .catch(e => {
+  //         console.error('#### swap failed from catch ####', e);
 
-          handleTransactionComplete(false, undefined);
-        });
-    } else {
-      SwapFn.performApprove(defaultFrom, fromAmountBN)
-        .then(confirmedTransaction => {
-          Metrics.track('approve-complete', {
-            from: defaultFrom,
-            fromAmount: fromAmount,
-          });
-          onApproveComplete(approvalState.APPROVED);
-        })
-        .catch(e => {
-          console.error('#### approve failed from catch ####', e);
-          console.error(e);
-        });
-    }
-  }
+  //         handleTransactionComplete(false, undefined);
+  //       });
+  //   } else {
+  //     SwapFn.performApprove(defaultFrom, fromAmountBN)
+  //       .then(confirmedTransaction => {
+  //         Metrics.track('approve-complete', {
+  //           from: defaultFrom,
+  //           fromAmount: fromAmount,
+  //         });
+  //         onApproveComplete(approvalState.APPROVED);
+  //       })
+  //       .catch(e => {
+  //         console.error('#### approve failed from catch ####', e);
+  //         console.error(e);
+  //       });
+  //   }
+  // }
 
-  function onApproveComplete(approveStatus) {}
-  function onSwapEstimateComplete(
-    ofromAmount,
-    otoAmount,
-    dist,
-    oavailBalBN,
-    oapproveStatus
-  ) {
-    if (ofromAmount === fromAmount && otoAmount === toAmount) {
-      return;
-    }
-    setFromAmount(ofromAmount);
-    setToAmount(otoAmount);
-    setSwapDistribution(dist);
+  // function onApproveComplete(approveStatus) {}
+  // function onSwapEstimateComplete(
+  //   ofromAmount,
+  //   otoAmount,
+  //   dist,
+  //   oavailBalBN,
+  //   oapproveStatus
+  // ) {
+  //   if (ofromAmount === fromAmount && otoAmount === toAmount) {
+  //     return;
+  //   }
+  //   setFromAmount(ofromAmount);
+  //   setToAmount(otoAmount);
+  //   setSwapDistribution(dist);
 
-    setApproveStatus(oapproveStatus);
-  }
+  //   setApproveStatus(oapproveStatus);
+  // }
   return (
     <>
       <StyledDex theme_={theme}>
-        <h2>Cross Chain Swap(Swing)</h2>
+        <h2>Cross Chain Swap(Swing) In development</h2>
         <div className="dex">
           <motion.div className="row">
             <h3>From</h3>
@@ -256,7 +256,7 @@ function DEX() {
           </button>
         </div>
       </StyledDex>
-
+      {/* 
       <TokensModal
         title="Select a token"
         show={isFromModalActive}
@@ -274,7 +274,7 @@ function DEX() {
         tokenList={tokenList}
         handleTokenChange={handleTokenChange}
         target="to"
-      />
+      /> */}
     </>
   );
 }

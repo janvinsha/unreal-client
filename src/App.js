@@ -39,11 +39,9 @@ const MARKET_CONTRACT_ADDRESS = '0xC601829461D2a431eaB664823990C96AFC215f4d';
 const AIRDROP_CONTRACT_ADDRESS = '0x7992D9C75aBf9d0a7823d18f8c2A6346aAAD5d30';
 
 export const uauthOptions = {
-  clientID: 'client_id',
-  redirectUri: 'http://localhost:3000',
-
-  // Must include both the openid and wallet scopes.
-  scope: 'openid wallet',
+  clientID: 'be2e5d2c-7d39-46f5-ba18-2a63e42ac4ac',
+  redirectUri: 'http://localhost',
+  scope: 'openid wallet email:optional humanity_check:optional',
 };
 
 let providerOptions = {
@@ -60,13 +58,13 @@ let providerOptions = {
     // The SPA libary options
     options: uauthOptions,
   },
-  walletconnect: {
-    package: WalletConnect,
-    options: {
-      infuraId: 'fdd5eb8e3a004c9c9caa5a91a48b92b6',
-      chainId: 80001,
-    },
-  },
+  // walletconnect: {
+  //   package: WalletConnect,
+  //   options: {
+  //     infuraId: 'fdd5eb8e3a004c9c9caa5a91a48b92b6',
+  //     chainId: 80001,
+  //   },
+  // },
   coinbasewallet: {
     package: CoinbaseWalletSDK,
     options: {
