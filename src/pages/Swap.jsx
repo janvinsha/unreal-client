@@ -11,7 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import _ from 'underscore';
-import { TokensModal } from '../components';
+import { TokensModal, ChainsModal } from '../components';
+
+import { ethers } from 'ethers';
 
 // import { useTokenPrice } from 'react-moralis';
 // import { tokenValue } from 'helpers/formatters';
@@ -29,21 +31,41 @@ import AppContext from '../context/AppContext';
 // import Metrics from '../utils/metrics';
 // import EventManager from '../utils/events';
 
+import BigNumber from 'bignumber.js';
+
+import SwingSDK, { TransferParams } from '@swing.xyz/sdk';
+import Filter from '../components/Filter';
+
+// Create a new SwingSDK client
+
+const sdk = new SwingSDK();
+
 function DEX() {
+  // Initialize the SDK (populates config such as available chains, tokens, bridges, etc)
+
   // const { trySwap, tokenList, getQuote } = useInchDex(chain);
 
   // // const { Moralis, isInitialized, chainId } = useMoralis();
-  const [isFromModalActive, setFromModalActive] = useState(false);
-  const [isToModalActive, setToModalActive] = useState(false);
+  const [chains, setChains] = useState([]);
+  const [fromChain, setFromChain] = useState();
+  const [toChain, setToChain] = useState();
   const [fromToken, setFromToken] = useState();
   const [toToken, setToToken] = useState();
+  const [amount, setAmount] = useState();
+  const [isFromModalActive, setFromModalActive] = useState(false);
+  const [isToModalActive, setToModalActive] = useState(false);
+
+  const [isFromChainModalActive, setFromChainModalActive] = useState(false);
+  const [isToChainModalActive, setToChainModalActive] = useState(false);
   const [fromAmount, setFromAmount] = useState();
   const [toAmount, setToAmount] = useState();
   const [approveStatus, setApproveStatus] = useState();
   const [swapDistribution, setSwapDistribution] = useState();
   // const swapConfig = GlobalStateManager.getSwapConfig();
 
-  const { theme, accountDetails } = useContext(AppContext);
+  console.log('SEE CHAINS HERE PPPPPP', chains);
+  const { theme, accountDetails, currentAccount, connectWallet, chainId } =
+    useContext(AppContext);
   const handleTokenListToggle = target => {
     if (target == 'from') {
       setFromModalActive(true);
@@ -51,98 +73,178 @@ function DEX() {
       setToModalActive(true);
     }
   };
+  const handleChainListToggle = target => {
+    if (target == 'from') {
+      setFromChainModalActive(true);
+    } else {
+      setToChainModalActive(true);
+    }
+  };
 
-  // const network = TokenListManager.getCurrentNetworkConfig();
-  // const crossChainTokens = _.map(network?.supportedCrossChainTokens, v =>
-  //   TokenListManager.findTokenById(v, network)
-  // );
-  // const tokenList = false // TODO always show reduced list; && this.props.isFrom
-  //   ? crossChainTokens
-  //   : undefined;
-
-  // const handleTokenChange = (token, target) => {
-  //   if (target === 'from') {
-  //     setFromAmount(SwapFn.validateEthValue(token, fromAmount));
+  // sdk.on('TRANSFER', async (transferStatus) => {
+  //   if (transferStatus.status === 'CHAIN_SWITCH_REQUIRED') {
+  //     // https://docs.metamask.io/guide/rpc-api.html#usage-with-wallet-switchethereumchain
+  //     try {
+  //       await window.ethereum.request({
+  //         method: 'wallet_switchEthereumChain',
+  //         params: [chain],
+  //       });
+  //     } catch (switchError) {
+  //       if (switchError.code === 4902) {
+  //         await window.ethereum.request({
+  //           method: 'wallet_addEthereumChain',
+  //           params: [chain],
+  //         });
+  //       }
+  //     }
   //   }
-  // };
-
-  // const defaultTo = TokenListManager.findTokenById(network?.defaultPair?.to);
-  // const defaultFrom = TokenListManager.findTokenById(
-  //   network?.defaultPair?.from
-  // );
-  // GlobalStateManager.updateSwapConfig({
-  //   to: defaultTo,
-  //   from: defaultFrom,
-  //   toChain: network?.name,
-  //   fromChain: network?.name,
   // });
 
-  // function handleTransactionComplete(success, hash) {
-  //   EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
-  // }
+  // Connect to a wallet
+  const connect = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    sdk.wallet.connect(provider);
+  };
 
-  // function handleConfirm() {
-  //   const fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
+  useEffect(() => {
+    connect();
+  }, []);
 
-  //   if (approveStatus === approvalState.APPROVED) {
-  //     const distBN = _.map(swapDistribution, e =>
-  //       window.ethers.utils.parseUnits(`${e}`, 'wei')
-  //     );
-  //     SwapFn.performSwap(defaultFrom, defaultTo, fromAmountBN, distBN)
-  //       .then(nonce => {
-  //         console.log(nonce);
+  useEffect(() => {
+    sdk.init().then(() => {
+      console.log(sdk, 'SDK HERE OOOOO');
+      setChains(sdk.chains);
+      setFromChain(sdk.chains[0]);
+      setToChain(sdk.chains[0]);
+    });
+  }, []);
+  useEffect(() => {
+    if (fromChain) setFromToken(fromChain?.tokens[0]);
+  }, [fromChain]);
 
-  //         handleTransactionComplete(true, nonce);
+  useEffect(() => {
+    if (toChain) setToToken(toChain?.tokens[0]);
+  }, [toChain]);
 
-  //         Metrics.track('swap-complete', {
-  //           from: defaultFrom,
-  //           to: defaultTo,
-  //           fromAmount,
-  //         });
-  //       })
-  //       .catch(e => {
-  //         console.error('#### swap failed from catch ####', e);
+  const getButtonName = () => {
+    if (!currentAccount) return 'Connect Wallet';
+    if (Number(fromChain?.chainId) !== Number(chainId))
+      return `Switch to ${fromChain?.name || 'Ethereum'}`;
+    return 'Swap';
+  };
+  const onClick = async () => {
+    try {
+      if (!currentAccount) {
+        connectWallet();
+        return;
+      }
 
-  //         handleTransactionComplete(false, undefined);
-  //       });
-  //   } else {
-  //     SwapFn.performApprove(defaultFrom, fromAmountBN)
-  //       .then(confirmedTransaction => {
-  //         Metrics.track('approve-complete', {
-  //           from: defaultFrom,
-  //           fromAmount: fromAmount,
-  //         });
-  //         onApproveComplete(approvalState.APPROVED);
-  //       })
-  //       .catch(e => {
-  //         console.error('#### approve failed from catch ####', e);
-  //         console.error(e);
-  //       });
-  //   }
-  // }
+      if (fromChain?.chainId !== chainId) {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `${ethers.utils.hexlify(fromChain?.chainId)}` }],
+        });
 
-  // function onApproveComplete(approveStatus) {}
-  // function onSwapEstimateComplete(
-  //   ofromAmount,
-  //   otoAmount,
-  //   dist,
-  //   oavailBalBN,
-  //   oapproveStatus
-  // ) {
-  //   if (ofromAmount === fromAmount && otoAmount === toAmount) {
-  //     return;
-  //   }
-  //   setFromAmount(ofromAmount);
-  //   setToAmount(otoAmount);
-  //   setSwapDistribution(dist);
+        return;
+      }
+      if (!fromChain || !toChain || !fromToken || !toToken || !amount) {
+        console.log('Please check chain and tokens');
+        return;
+      }
 
-  //   setApproveStatus(oapproveStatus);
-  // }
+      const tokenAmount = new BigNumber(amount).times(10 ** fromToken?.decimal);
+
+      // Setup transfer parameters
+      const transferParams = {
+        fromChain: fromChain?.slug,
+        toChain: toChain?.slug,
+
+        fromToken: fromToken?.symbol,
+        toToken: toToken?.symbol,
+
+        amount: tokenAmount?.toString(),
+
+        fromUserAddress: currentAccount,
+        toUserAddress: currentAccount,
+      };
+
+      // Get a quote
+      const quote = await sdk.getQuote(transferParams);
+      console.log(quote, 'IT IS HERE QUOTE');
+
+      // Select an available route from the quote
+      const transferRoute = quote.routes[0].route;
+      console.log(transferRoute, 'IT IS HERE TRANSFER ROUTE');
+      // Start a transfer
+      const transfer = await sdk.transfer(transferRoute, transferParams);
+      console.log(transfer, 'TRANSFER STATUS');
+    } catch (error) {
+      console.log(error, 'EnCOUNTERED AN ERROR');
+    }
+  };
+
+  const onChangeFromChain = id => {
+    const chain = chains.find(c => Number(c.chainId) === Number(id));
+    setFromChain(chain);
+  };
+  const onChangeToChain = id => {
+    const chain = chains.find(c => Number(c.chainId) === Number(id));
+    setToChain(chain);
+  };
+
+  const onChangeFromToken = addr => {
+    const token = fromChain?.tokens?.find(t => t.address === addr);
+    setFromToken(token);
+  };
+  const onChangeToToken = addr => {
+    const token = toChain?.tokens?.find(t => t.address === addr);
+    setToToken(token);
+  };
+
   return (
     <>
       <StyledDex theme_={theme}>
-        <h2>Cross Chain Swap(Swing) In development</h2>
+        <h2>Cross Chain Swap(Swing) Mainnet</h2>
         <div className="dex">
+          <motion.div className="row-chain">
+            <span>
+              {' '}
+              <h3>From Chain</h3>
+              <button
+                className="plain-btn"
+                onClick={() => handleChainListToggle('from')}
+              >
+                <Image
+                  src={
+                    fromChain?.logo ||
+                    'https://etherscan.io/images/main/empty-token.png'
+                  }
+                  alt="nologo"
+                  width="30px"
+                />{' '}
+                {fromChain?.slug || 'ethereum'}
+              </button>
+            </span>
+            <span>
+              {' '}
+              <h3>To Chain</h3>
+              <button
+                className="plain-btn"
+                onClick={() => handleChainListToggle('to')}
+              >
+                <Image
+                  src={
+                    toChain?.logo ||
+                    'https://etherscan.io/images/main/empty-token.png'
+                  }
+                  alt="nologo"
+                  width="30px"
+                />
+                {toChain?.slug || 'etherum'}
+              </button>
+            </span>
+          </motion.div>
+
           <motion.div className="row">
             <h3>From</h3>
             <div className="input-row">
@@ -151,8 +253,8 @@ function DEX() {
                   type="number"
                   placeholder="0.00"
                   className="row-input"
-                  onChange={e => setFromAmount(e.target.value)}
-                  value={fromAmount}
+                  onChange={e => setAmount(e.target.value)}
+                  value={amount}
                   focusBorderColor="#0b172e"
                 />
                 {/* <h3>{fromTokenAmountUsd}</h3> */}
@@ -162,21 +264,22 @@ function DEX() {
                 onClick={() => handleTokenListToggle('from')}
               >
                 {/* {fromToken ? ( */}
-                {true ? (
-                  <Image
-                    src={
-                      // fromToken?.logoURI ||
-                      'https://etherscan.io/images/main/empty-token.png'
-                    }
-                    alt="nologo"
-                    width="30px"
-                    preview={false}
-                    style={{ borderRadius: '15px' }}
-                  />
+                {toToken ? (
+                  <>
+                    {/* <Image
+                      src={
+                        fromToken?.logo ||
+                        'https://etherscan.io/images/main/empty-token.png'
+                      }
+                      alt="nologo"
+                      width="30px"
+                    /> */}
+                    <span>{fromToken?.symbol}</span>
+                  </>
                 ) : (
                   <span>Select a token</span>
                 )}
-                {/* <span>{fromToken?.symbol}</span> */}
+
                 <Arrow />
               </button>
             </div>
@@ -194,7 +297,7 @@ function DEX() {
             <h3>To</h3>
             <div className="input-row">
               <div className="row-input-div">
-                <Input
+                {/* <Input
                   className="row-input down"
                   placeholder="0.00"
                   readOnly
@@ -208,7 +311,7 @@ function DEX() {
                   //       ).toFixed(6)
                   //     : ''
                   // }
-                />
+                /> */}
                 {/* <h3>{toTokenAmountUsd}</h3> */}
               </div>
               <button
@@ -216,22 +319,22 @@ function DEX() {
                 onClick={() => handleTokenListToggle('to')}
                 // type={toToken ? 'default' : 'primary'}
               >
-                {/* {toToken ? ( */}
-                {false ? (
-                  <Image
-                    src={
-                      // toToken?.logoURI ||
-                      'https://etherscan.io/images/main/empty-token.png'
-                    }
-                    alt="nologo"
-                    width="30px"
-                    preview={false}
-                    style={{ borderRadius: '15px' }}
-                  />
+                {toToken ? (
+                  <>
+                    {/* <Image
+                      src={
+                        toToken?.logo ||
+                        'https://etherscan.io/images/main/empty-token.png'
+                      }
+                      alt="nologo"
+                      width="30px"
+                    /> */}
+                    <span>{toToken?.symbol}</span>
+                  </>
                 ) : (
                   <span>Select a token</span>
                 )}
-                {/* <span>{toToken?.symbol}</span> */}
+
                 <Arrow />
               </button>
             </div>
@@ -250,20 +353,20 @@ function DEX() {
             className="swap-btn"
             // onClick={() => trySwap(currentTrade)}
             // disabled={!ButtonState.isActive}
+            onClick={onClick}
           >
-            {/* {ButtonState.text} */}
-            Swap
+            {getButtonName()}
           </button>
         </div>
       </StyledDex>
-      {/* 
+
       <TokensModal
         title="Select a token"
         show={isFromModalActive}
         onClose={() => setFromModalActive(false)}
         setFromToken={setFromToken}
-        tokenList={tokenList}
-        handleTokenChange={handleTokenChange}
+        tokenList={fromChain?.tokens}
+        handleTokenChange={onChangeFromToken}
         target="from"
       />
       <TokensModal
@@ -271,10 +374,28 @@ function DEX() {
         setToken={setToToken}
         onClose={() => setToModalActive(false)}
         show={isToModalActive}
-        tokenList={tokenList}
-        handleTokenChange={handleTokenChange}
+        tokenList={toChain?.tokens}
+        handleTokenChange={onChangeToToken}
         target="to"
-      /> */}
+      />
+      <ChainsModal
+        title="Select from chain"
+        setChain={setFromChain}
+        onClose={() => setFromChainModalActive(false)}
+        show={isFromChainModalActive}
+        chainList={chains}
+        handleChainChange={onChangeFromChain}
+        target="to"
+      />
+      <ChainsModal
+        title="Select to chain"
+        setChain={setToChain}
+        onClose={() => setToChainModalActive(false)}
+        show={isToChainModalActive}
+        chainList={chains}
+        handleChainChange={onChangeToChain}
+        target="to"
+      />
     </>
   );
 }
@@ -303,6 +424,18 @@ const StyledDex = styled(motion.div)`
     gap: 0.5rem;
     @media (max-width: 900px) {
       width: 100%;
+    }
+    .row-chain {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      gap: 1rem;
+      span {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
     }
     .row {
       display: flex;

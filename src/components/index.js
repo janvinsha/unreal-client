@@ -22,3 +22,4 @@ export { default as WorldIDComponent } from './WorldIDComponent';
 export { default as Comment } from './Comment';
 export { default as CreateComment } from './CreateComment';
 export { default as TokensModal } from './TokensModal';
+export { default as ChainsModal } from './ChainsModal';

@@ -4,22 +4,22 @@ import styled from 'styled-components';
 
 import AppContext from '../context/AppContext';
 import Modal from './Modal';
-
-const TokensModal = ({
+import { Image } from '@chakra-ui/react';
+const ChainsModal = ({
   show,
   onClose,
   title,
-  handleTokenChange,
+  handleChainChange,
   target,
-  tokenList,
+  chainList,
 }) => {
   const location = useLocation();
   const pathname = location.pathname;
   const { theme, changeTheme } = useContext(AppContext);
 
-  console.log(tokenList, 'HERE IS THE TOKEN LIST');
-  const handleSelect = address => {
-    handleTokenChange(address);
+  console.log(chainList, 'HERE IS THE chain LIST');
+  const handleSelect = chainId => {
+    handleChainChange(chainId);
     onClose();
   };
   useEffect(() => {}, []);
@@ -31,26 +31,32 @@ const TokensModal = ({
       title={title}
       modalStyle={{ height: 'auto' }}
     >
-      <StyledTokensModal theme_={theme}>
-        {tokenList?.map((v, i) => (
-          <span className="token" onClick={() => handleSelect(v.address)}>
-            <h3>{v.symbol}</h3>
+      <StyledChainsModal theme_={theme}>
+        {chainList?.map((v, i) => (
+          <span className="chain" onClick={() => handleSelect(v.chainId)}>
+            <Image
+              src={v.logo || 'https://etherscan.io/images/main/empty-token.png'}
+              alt="nologo"
+              width="30px"
+            />{' '}
+            <h3>{v.slug}</h3>
           </span>
         ))}
-      </StyledTokensModal>
+      </StyledChainsModal>
     </Modal>
   );
 };
-const StyledTokensModal = styled.div`
+const StyledChainsModal = styled.div`
   padding: 2rem 0rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   height: 30rem;
   overflow-y: scroll;
-  .token {
+  .chain {
     display: flex;
-    flex-flow: column wrap;
+    align-items: center;
+    gap: 1rem;
     border-radius: 1rem;
     background: ${({ theme_ }) => (theme_ ? '#16161A' : '#ffffff')};
     background: blue;
@@ -59,4 +65,4 @@ const StyledTokensModal = styled.div`
     cursor: pointer;
   }
 `;
-export default TokensModal;
+export default ChainsModal;

@@ -15,6 +15,7 @@ import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 import { GlobalStyle, Nav, Footer } from './components';
 import { gql, useQuery } from '@apollo/client';
+
 //
 
 ///
@@ -83,6 +84,8 @@ const web3Modal = new Web3Modal({
 
 UAuthWeb3Modal.registerWeb3Modal(web3Modal);
 
+// Initialize the SDK (populates config such as available chains, tokens, bridges, etc)
+
 const App = () => {
   const [theme, setTheme] = useState(JSON.parse(localStorage.getItem('theme')));
   const [sideNav, setSideNav] = useState(false);
@@ -95,7 +98,7 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
-
+  const [chainId, setChainId] = useState();
   const [accountDetails, setAccountDetails] = useState();
   const [provider, setProvider] = useState();
 
@@ -140,10 +143,11 @@ const App = () => {
         // let data = await connectedContract.fetchCollectionsOfAddress(account);
         // console.log('HERE ARE THE ITEMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS', data);
         console.log('Going to pop wallet now to pay gas...');
-        let chainId = await signer.getChainId();
-        if (chainId == 80001) {
+        let chainID = await signer.getChainId();
+        setChainId(chainID);
+        if (chainID == 80001) {
         } else {
-          alert('CONNECT TO POLYGON MATIC(TESTNET) TO CONTINUE');
+          // alert('CONNECT TO POLYGON MATIC(TESTNET) TO CONTINUE');
         }
 
         // Setup listener! This is for the case where a user comes to our site
@@ -386,7 +390,7 @@ const App = () => {
       value={{
         currentAccount,
         setCurrentAccount,
-
+        chainId,
         minting,
         setMinting,
         fetchNfts,
