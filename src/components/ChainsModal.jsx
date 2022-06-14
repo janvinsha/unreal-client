@@ -36,7 +36,7 @@ const ChainsModal = ({
           <span className="chain" onClick={() => handleSelect(v.chainId)}>
             <Image
               src={v.logo || 'https://etherscan.io/images/main/empty-token.png'}
-              alt="nologo"
+              alt=""
               width="30px"
             />{' '}
             <h3>{v.slug}</h3>

@@ -225,7 +225,7 @@ function DEX() {
                     fromChain?.logo ||
                     'https://etherscan.io/images/main/empty-token.png'
                   }
-                  alt="nologo"
+                  alt=""
                   width="30px"
                   border="10px"
                 />{' '}
@@ -244,7 +244,7 @@ function DEX() {
                     toChain?.logo ||
                     'https://etherscan.io/images/main/empty-token.png'
                   }
-                  alt="nologo"
+                  alt=""
                   width="30px"
                   border="10px"
                 />
@@ -470,7 +470,7 @@ const StyledDex = styled(motion.div)`
           .row-input {
             display: flex;
             background: none;
-
+            font-size: 1.2rem;
             border: none;
             outline: none;
           }
