@@ -11,7 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import _ from 'underscore';
-import { TokensModal, ChainsModal } from '../components';
+import { TokensModal, ChainsModal, Loader } from '../components';
 
 import { ethers } from 'ethers';
 
@@ -53,6 +53,7 @@ function DEX() {
   const [toToken, setToToken] = useState();
   const [amount, setAmount] = useState();
   const [isFromModalActive, setFromModalActive] = useState(false);
+  const [swapping, setSwapping] = useState(false);
   const [isToModalActive, setToModalActive] = useState(false);
 
   const [isFromChainModalActive, setFromChainModalActive] = useState(false);
@@ -169,6 +170,7 @@ function DEX() {
       };
 
       // Get a quote
+      setSwapping(true);
       const quote = await sdk.getQuote(transferParams);
       console.log(quote, 'IT IS HERE QUOTE');
 
@@ -178,7 +180,10 @@ function DEX() {
       // Start a transfer
       const transfer = await sdk.transfer(transferRoute, transferParams);
       console.log(transfer, 'TRANSFER STATUS');
+      setSwapping(false);
     } catch (error) {
+      setSwapping(false);
+      alert('An error occurred, try again');
       console.log(error, 'EnCOUNTERED AN ERROR');
     }
   };
@@ -204,6 +209,7 @@ function DEX() {
   return (
     <>
       <StyledDex theme_={theme}>
+        <Loader visible={swapping} />
         <h2>Cross Chain Swap(Swing) Mainnet</h2>
         <div className="dex">
           <motion.div className="row-chain">
@@ -221,8 +227,9 @@ function DEX() {
                   }
                   alt="nologo"
                   width="30px"
+                  border="10px"
                 />{' '}
-                {fromChain?.slug || 'ethereum'}
+                {fromChain?.slug || 'ethereum'} <Arrow />
               </button>
             </span>
             <span>
@@ -239,8 +246,9 @@ function DEX() {
                   }
                   alt="nologo"
                   width="30px"
+                  border="10px"
                 />
-                {toChain?.slug || 'etherum'}
+                {toChain?.slug || 'etherum'} <Arrow />
               </button>
             </span>
           </motion.div>
