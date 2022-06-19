@@ -54,7 +54,7 @@ export default function NftDetails() {
   const getData = async () => {
     try {
       data = await axios.get(
-        `https://api.covalenthq.com/v1/80001/tokens/0xE9352F25795c89493e171D5d32A2350A2b3Bd8Fc/nft_transactions/${nft.tokenId}/?quote-currency=USD&format=JSON&key=ckey_9ebee12fd55e4e05b33496e5c7e`
+        `https://api.covalenthq.com/v1/80001/tokens/0x46874FEe5Ac808277559c619c52B295429A32911/nft_transactions/${nft.tokenId}/?quote-currency=USD&format=JSON&key=ckey_9ebee12fd55e4e05b33496e5c7e`
       );
       setNftData(data);
       return data;
@@ -66,7 +66,7 @@ export default function NftDetails() {
   useEffect(() => {
     getData();
   }, []);
-  const ContentTopic = `/unreal-market/0/nft-comment/0xE9352F25795c89493e171D5d32A2350A2b3Bd8Fc/proto`;
+  const ContentTopic = `/unreal-market/0/nft-comment/0x46874FEe5Ac808277559c619c52B295429A32911/proto`;
   const [waku, setWaku] = React.useState(undefined);
   const [wakuStatus, setWakuStatus] = React.useState('None');
   // Using a counter just for the messages to be different
@@ -157,6 +157,7 @@ export default function NftDetails() {
         name
         image
         category
+
         description
         tags
       }
@@ -182,7 +183,7 @@ export default function NftDetails() {
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8` },
+    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
   });
   let userProfile = getProfileData?.profiles[0];
   return (
@@ -200,7 +201,7 @@ export default function NftDetails() {
         </div>
 
         <div className="right">
-          <h2>HackMoney (2022)</h2>
+          <h2>Encode (2022)</h2>
           <span className="author">
             <img src={userProfile?.dp || defPic} alt="img" />{' '}
             <Link to={`/profile/${userProfile?.id}`}>
@@ -230,7 +231,7 @@ export default function NftDetails() {
                 </span>
                 <span className="price">
                   <span>Collection</span>{' '}
-                  <Link to="/collections/2">Ethglobal</Link>
+                  <Link to="/collections/2">Encode</Link>
                 </span>
                 <div className="buy">
                   <button onClick={() => buyNft(nft?.tokenId)}>Buy NFT</button>

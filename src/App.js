@@ -35,7 +35,7 @@ import AppContext from './context/AppContext';
 
 import marketContract from './utils/marketContract.json';
 
-const MARKET_CONTRACT_ADDRESS = '0xC601829461D2a431eaB664823990C96AFC215f4d';
+const MARKET_CONTRACT_ADDRESS = '0x46874FEe5Ac808277559c619c52B295429A32911';
 
 const AIRDROP_CONTRACT_ADDRESS = '0x7992D9C75aBf9d0a7823d18f8c2A6346aAAD5d30';
 

@@ -43,9 +43,9 @@ export default function CollectionDetails() {
   });
 
   let foundCollection = {
-    name: 'Ethglobal',
+    name: 'Encode',
     description: 'Build the future of Finance',
-    owner: '0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8',
+    owner: '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39',
   };
 
   const GET_PROFILE_QUERY = gql`
@@ -61,7 +61,7 @@ export default function CollectionDetails() {
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8` },
+    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
   });
   let userProfile = getProfileData?.profiles[0];
   return (

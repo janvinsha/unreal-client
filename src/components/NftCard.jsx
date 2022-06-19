@@ -8,7 +8,7 @@ import nftImg from '../assets/images/HM.png';
 import defPic from '../assets/images/bg.png';
 
 const NftCard = ({ nft }) => {
-  const { theme } = useContext(AppContext);
+  const { theme, currentAccount } = useContext(AppContext);
   let navigate = useNavigate();
 
   const GET_PROFILE_QUERY = gql`
@@ -18,12 +18,13 @@ const NftCard = ({ nft }) => {
         profileId
         banner
         dp
+        name
       }
     }
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8` },
+    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
   });
   let userProfile = getProfileData?.profiles[0];
   return (
@@ -31,7 +32,7 @@ const NftCard = ({ nft }) => {
       <img src={nftImg} alt="img" />
       <div className="nft-desc">
         <span className="nft_title">
-          <h3>HackMoney (2022)</h3> <p>1 ETH</p>
+          <h3>Encode (2022)</h3> <p>1 ETH</p>
         </span>
 
         <span className="nft_sale">

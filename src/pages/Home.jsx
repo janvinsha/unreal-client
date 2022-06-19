@@ -79,7 +79,7 @@ export default function Home() {
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8` },
+    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
   });
   let userProfile = getProfileData?.profiles[0];
   return (
@@ -102,7 +102,7 @@ export default function Home() {
           <img src={defPic} alt="img" />
         </div>
         <div className="about">
-          <h1>HackMoney (2022)</h1>
+          <h1>Encode (2022)</h1>
           <span className="author">
             <img src={userProfile?.dp || defPic} alt="img" />{' '}
             <Link to={`/profile/${userProfile?.id}`}>
@@ -110,7 +110,7 @@ export default function Home() {
             </Link>
           </span>
           <span className="price">
-            <span>Collection</span> <Link to="/collections/2">Ethglobal</Link>
+            <span>Collection</span> <Link to="/collections/2">Encode</Link>
           </span>
 
           <p>Build the future of Finance</p>

@@ -16,12 +16,13 @@ const CollectionCard = ({ collection }) => {
         profileId
         banner
         dp
+        name
       }
     }
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0xFF3e7fD8994d7dbEcdCfFA54EDcAaf6A8DB2CbF8` },
+    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
   });
   let userProfile = getProfileData?.profiles[0];
   return (
@@ -32,7 +33,7 @@ const CollectionCard = ({ collection }) => {
       <img src={nftImg} alt="img" />
       <div className="nft-desc">
         <span className="title">
-          <h3>Ethglobal</h3>
+          <h3>Encode</h3>
         </span>
 
         <span className="sale">
