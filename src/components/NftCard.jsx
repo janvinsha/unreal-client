@@ -28,7 +28,7 @@ const NftCard = ({ nft }) => {
   });
   let userProfile = getProfileData?.profiles[0];
   return (
-    <StyledNftCard theme_={theme} onClick={() => navigate('/nfts/3')}>
+    <StyledNftCard theme_={theme} onClick={() => navigate('/nfts/1')}>
       <img src={nftImg} alt="img" />
       <div className="nft-desc">
         <span className="nft_title">

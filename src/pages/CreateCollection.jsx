@@ -181,7 +181,7 @@ const CreateCollection = () => {
               theme={theme}
             />
 
-            <button type="submit">Creat Collection</button>
+            <button type="submit">Create Collection</button>
           </form>
         </div>
       </motion.div>

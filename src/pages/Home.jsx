@@ -118,7 +118,7 @@ export default function Home() {
             <span>Price</span>
             <h2>1 ETH</h2>
           </div>
-          <button onClick={() => navigate('/nfts/3')}>Buy Nft</button>
+          <button onClick={() => navigate('/nfts/1')}>Buy Nft</button>
         </div>
       </div>
       {/* <div className="popular-nfts">
