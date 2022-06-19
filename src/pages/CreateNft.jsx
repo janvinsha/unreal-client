@@ -238,7 +238,7 @@ const CreateNft = ({ show, onClose }) => {
               theme={theme}
             />
 
-            <button type="submit">Creat item</button>
+            <button type="submit">Create item</button>
             <small className="listing-price">Listing Fee is 0.025 ETH</small>
           </form>
         </div>

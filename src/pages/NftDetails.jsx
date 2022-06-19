@@ -54,7 +54,7 @@ export default function NftDetails() {
   const getData = async () => {
     try {
       data = await axios.get(
-        `https://api.covalenthq.com/v1/80001/tokens/0x46874FEe5Ac808277559c619c52B295429A32911/nft_transactions/${nft.tokenId}/?quote-currency=USD&format=JSON&key=ckey_9ebee12fd55e4e05b33496e5c7e`
+        `https://api.covalenthq.com/v1/80001/tokens/0xBaFDdDCd96e18Bedd401f781c4020E8677898828/nft_transactions/${nft.tokenId}/?quote-currency=USD&format=JSON&key=ckey_9ebee12fd55e4e05b33496e5c7e`
       );
       setNftData(data);
       return data;

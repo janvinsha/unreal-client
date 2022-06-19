@@ -59,6 +59,8 @@ export default function Explore() {
     }
   `;
 
+  const { data, error } = useQuery(POPULAR_COLLECTIONS_QUERY);
+  console.log('HERE ARE THE COLLECTIONS,', data);
   return (
     <StyledExplore
       exit="exit"

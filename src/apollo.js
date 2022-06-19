@@ -6,7 +6,7 @@ import {
 } from '@apollo/client';
 
 const httpLink = new HttpLink({
-  uri: 'https://api.thegraph.com/subgraphs/name/janvinsha/unreal-subgraph-v5',
+  uri: 'https://api.thegraph.com/subgraphs/name/janvinsha/unreal-subgraph-v6',
   fetch,
 });
 
