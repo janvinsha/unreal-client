@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
 import { gql, useQuery } from '@apollo/client';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
+import { ethers } from 'ethers';
 import { Waku, WakuMessage } from 'js-waku';
 
 // import protons from 'protons';
@@ -29,6 +29,7 @@ import { pageAnimation } from '../animation';
 import defPic from '../assets/images/HM.png';
 import ShareIcon from '@mui/icons-material/Share';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import sanitizeIpfsUrl from '../utils/sanitizeIpfsUrl';
 
 const SimpleChatMessage = new protobuf.Type('SimpleChatMessage')
   .add(new protobuf.Field('timestamp', 1, 'uint64'))
@@ -46,7 +47,7 @@ export default function NftDetails() {
   const tabs = ['Description', 'History'];
   const [activeTab, setActiveTab] = useState('Description');
   let comments = [];
-  let nft = { tokenId: 1 };
+
   let COVALENT_KEY = 'ckey_9ebee12fd55e4e05b33496e5c7e';
 
   let [nftData, setNftData] = useState();
@@ -153,13 +154,10 @@ export default function NftDetails() {
         owner
         price
         sold
-        collectionId
+        collection
         name
         image
-        category
-
         description
-        tags
       }
     }
   `;
@@ -168,8 +166,8 @@ export default function NftDetails() {
     variables: { id: nftId },
   });
 
-  console.log('THIS IS THE NFT DATA', resultData);
-
+  console.log('THIS IS THE NFT DATA', resultData?.marketItems?.[0]);
+  const nft = resultData?.marketItems?.[0];
   const GET_PROFILE_QUERY = gql`
     query GetProfile($id: String) {
       profiles(first: 1, where: { profileId_contains: $id }) {
@@ -183,7 +181,9 @@ export default function NftDetails() {
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
+    variables: {
+      id: `${nft?.owner || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
+    },
   });
   let userProfile = getProfileData?.profiles[0];
   return (
@@ -197,11 +197,11 @@ export default function NftDetails() {
       <Loader visible={buyingNft} />
       <div className="desc">
         <div className="left">
-          <img src={defPic} alt="img" />
+          <img src={sanitizeIpfsUrl(nft?.image)} alt="img" />
         </div>
 
         <div className="right">
-          <h2>Encode (2022)</h2>
+          <h2>{nft?.name}</h2>
           <span className="author">
             <img src={userProfile?.dp || defPic} alt="img" />{' '}
             <Link to={`/profile/${userProfile?.id}`}>
@@ -227,14 +227,22 @@ export default function NftDetails() {
                 <p>Build the future of Finance</p>
                 <span className="price">
                   <span>Price</span>
-                  <h2>1 ETH</h2>
+                  <h2>
+                    {ethers.utils.formatUnits(
+                      nft?.price.toString() || 11,
+                      'ether'
+                    )}{' '}
+                    ETH
+                  </h2>
                 </span>
                 <span className="price">
                   <span>Collection</span>{' '}
                   <Link to="/collections/2">Encode</Link>
                 </span>
                 <div className="buy">
-                  <button onClick={() => buyNft(nft?.tokenId)}>Buy NFT</button>
+                  <button onClick={() => buyNft(nft?.tokenId, nft?.price)}>
+                    Buy NFT
+                  </button>
                 </div>
                 <div className="interact">
                   <button className="plain-btn" onClick={() => setShare(true)}>

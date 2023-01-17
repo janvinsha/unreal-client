@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { NFTStorage, File } from 'nft.storage/dist/bundle.esm.min.js';
 import { create } from 'ipfs-http-client';
 
 import AppContext from '../context/AppContext';
@@ -13,23 +12,22 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import defPic from '../assets/images/bg.png';
 
-// const client = create({
-//   host: 'ipfs.infura.io',
-//   port: 5001,
-//   protocol: 'https',
-// });
-let API_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDM0MTBFMThhZUMzOGY4M2UyNTMxMzA4QmQyN0QyM0I3MjllNTJDNDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0OTQzNjM4OTkyNiwibmFtZSI6IkRBTyJ9.eWlB3VEJKUk3R1S6e5RFRhdONcgBkyCMjrWA9O5kdsA';
-const nftClient = new NFTStorage({ token: API_TOKEN });
+const projectId = process.env.REACT_APP_INFURA_PROJECT_ID;
+const projectSecret = process.env.REACT_APP_INFURA_PROJECT_SECRET;
+
+const auth =
+  'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 const client = create({
   host: 'ipfs.infura.io',
   port: 5001,
   protocol: 'https',
+  headers: {
+    authorization: auth,
+  },
 });
 const EditProfileModal = ({ show, onClose, user }) => {
-  const { theme, accountDetails, editProfile, editingProfile } =
-    useContext(AppContext);
+  const { theme, editProfile, editingProfile } = useContext(AppContext);
   const [name, setName] = useState(user?.name);
 
   const [bio, setBio] = useState(user?.bio);
@@ -74,22 +72,14 @@ const EditProfileModal = ({ show, onClose, user }) => {
       let bannerUrl;
       let photo;
       let photoUrl;
-      let tempUrl;
+
       if (dp) {
         photo = await client.add(dp);
-        photoUrl = `https://ipfs.infura.io/ipfs/${photo.path}`;
-        const metadata = await nftClient.store({
-          name: 'Photo',
-          description: ' A photo',
-          image: new File([dp], 'A photo on Unreal Market', {
-            type: dp?.type,
-          }),
-        });
-        tempUrl = metadata.url;
+        photoUrl = `https://unreal-client.infura-ipfs.io/ipfs/${photo.path}`;
       }
       if (cover) {
         banner = await client.add(cover);
-        bannerUrl = `https://ipfs.infura.io/ipfs/${banner.path}`;
+        bannerUrl = `https://unreal-client.infura-ipfs.io/ipfs/${banner.path}`;
       }
 
       console.log('IPFS OBJECT', banner, photo);
@@ -102,14 +92,13 @@ const EditProfileModal = ({ show, onClose, user }) => {
         banner:
           bannerUrl ||
           user.banner ||
-          'https://bafybeifcdezziul3ebfdc7j2t7ham7ycmeqnxihq55pjph43vzqywiivoa.ipfs.infura-ipfs.io/',
+          'https://unreal-client.infura-ipfs.io/ipfs/QmVKDkBnDFHy4kwMtLhwJe1c4TwSAPWoVFuJk6Xajh7mRy/',
         dp:
           photoUrl ||
           user.dp ||
-          'https://bafybeifcdezziul3ebfdc7j2t7ham7ycmeqnxihq55pjph43vzqywiivoa.ipfs.infura-ipfs.io/',
+          'https://unreal-client.infura-ipfs.io/ipfs/QmVKDkBnDFHy4kwMtLhwJe1c4TwSAPWoVFuJk6Xajh7mRy/',
         name,
         bio,
-        tempUrl,
       });
 
       // console.log('IPFS UPLOAD FILE URL', url);
@@ -117,9 +106,6 @@ const EditProfileModal = ({ show, onClose, user }) => {
       console.log('Error uploading file: ', error);
     }
   };
-  const tabs = ['Edit Profile', 'Change Profile picture'];
-
-  const [activeTab, setActiveTab] = useState('Edit Profile');
 
   return (
     <Modal

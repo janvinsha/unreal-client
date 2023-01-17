@@ -138,7 +138,6 @@ export default function Profile() {
           <EditProfileModal
             show={profileModal}
             onClose={() => setProfileModal(false)}
-            // user={userDetails}
             user={foundUser}
           />
         </>

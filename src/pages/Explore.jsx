@@ -19,25 +19,15 @@ export default function Explore() {
   const [selection, setSelection] = useState('nfts');
   const [sortBy, setSortBy] = useState('');
   const { theme } = useContext(AppContext);
-  const nfts = [{}];
-
-  const collections = [{}];
 
   const POPULAR_NFTS_QUERY = gql`
     query GetPopularNfts {
       marketItems(first: 8) {
         id
         tokenId
-        seller
-        owner
         price
-        sold
-        collectionId
         name
         image
-        category
-        description
-        tags
       }
     }
   `;
@@ -47,20 +37,19 @@ export default function Explore() {
       collections(first: 8) {
         id
         collectionId
-        banner
         dp
         owner
         name
-        totalSupply
-        noHolders
-        description
-        tags
       }
     }
   `;
 
-  const { data, error } = useQuery(POPULAR_COLLECTIONS_QUERY);
-  console.log('HERE ARE THE COLLECTIONS,', data);
+  const { data: collectionsData } = useQuery(POPULAR_COLLECTIONS_QUERY);
+  const { data: nftsData } = useQuery(POPULAR_NFTS_QUERY);
+
+  const collections = collectionsData?.collections;
+  const nfts = nftsData?.marketItems;
+  console.log('HERE ARE THE COLLECTIONS,', collections, nfts);
   return (
     <StyledExplore
       exit="exit"
@@ -108,8 +97,8 @@ export default function Explore() {
 
         <div className="cards">
           {selection === 'nfts'
-            ? nfts.map(nft => <NftCard nft={nft} />)
-            : collections.map(collection => (
+            ? nfts?.map(nft => <NftCard nft={nft} />)
+            : collections?.map(collection => (
                 <CollectionCard collection={collection} />
               ))}
         </div>

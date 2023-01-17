@@ -69,7 +69,7 @@ const CreateNft = ({ show, onClose }) => {
 
     try {
       let photo = await client.add(dp);
-      let photoUrl = `https://ipfs.infura.io/ipfs/${photo.path}`;
+      let photoUrl = `https://unreal-client.infura-ipfs.io/ipfs/${photo.path}`;
 
       console.log('IPFS UPLOAD FILE PHOTOURL', photoUrl);
       // console.log('FILES ARE HERE', files, dpFiles);
@@ -86,7 +86,7 @@ const CreateNft = ({ show, onClose }) => {
       console.log('Token  uri result', result);
       const upPrice = ethers.utils.parseUnits(price.toString(), 'ether');
       createItem({
-        tokenURI: `https://ipfs.infura.io/ipfs/${result.path}`,
+        tokenURI: `https://unreal-client.infura-ipfs.io/ipfs/${result.path}`,
         price: upPrice,
         collection,
         name,

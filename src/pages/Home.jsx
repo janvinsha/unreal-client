@@ -7,47 +7,22 @@ import styled from 'styled-components';
 
 import { NftCard, Sponsor } from '../components';
 import AppContext from '../context/AppContext';
-
+import { ethers } from 'ethers';
 import { pageAnimation } from '../animation';
 
 import defPic from '../assets/images/HM.png';
+import sanitizeIpfsUrl from '../utils/sanitizeIpfsUrl';
 
-import { sponsors } from '../data';
-import useInView from 'react-cool-inview';
-
-const POPULAR_NFTS_QUERY = gql`
-  query GetPopularNfts {
-    marketItems(first: 8) {
-      id
-      tokenId
-      seller
-      owner
-      price
-      sold
-      collectionId
-      name
-      image
-      category
-      description
-      tags
-    }
-  }
-`;
 const TOP_NFT_QUERY = gql`
   query GetTopNft {
     marketItem(id: "1") {
       id
       tokenId
-      seller
       owner
       price
-      sold
-      collectionId
       name
       image
-      category
       description
-      tags
     }
   }
 `;
@@ -56,16 +31,8 @@ export default function Home() {
 
   const { theme } = useContext(AppContext);
 
-  const nfts = [{}, {}, {}, {}, {}, {}, {}, {}];
-  const { data, loading, error } = useQuery(POPULAR_NFTS_QUERY);
+  const { data, loading, error } = useQuery(TOP_NFT_QUERY);
 
-  const {
-    data: popularData,
-    loading: popularLoading,
-    error: popularError,
-  } = useQuery(TOP_NFT_QUERY);
-
-  console.log(data, popularData);
   const GET_PROFILE_QUERY = gql`
     query GetProfile($id: String) {
       profiles(first: 1, where: { profileId_contains: $id }) {
@@ -77,11 +44,15 @@ export default function Home() {
       }
     }
   `;
-
+  const nft = data?.marketItem;
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
+    variables: {
+      id: `${nft?.owner || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
+    },
   });
   let userProfile = getProfileData?.profiles[0];
+  console.log('TOP NFT QUERY', data);
+
   return (
     <StyledHome
       exit="exit"
@@ -99,10 +70,10 @@ export default function Home() {
       </div>
       <div className="nft-desc">
         <div className="img">
-          <img src={defPic} alt="img" />
+          <img src={sanitizeIpfsUrl(nft?.image)} alt="img" />
         </div>
         <div className="about">
-          <h1>Encode (2022)</h1>
+          <h1>{nft?.name}</h1>
           <span className="author">
             <img src={userProfile?.dp || defPic} alt="img" />{' '}
             <Link to={`/profile/${userProfile?.id}`}>
@@ -116,41 +87,14 @@ export default function Home() {
           <p>Build the future of Finance</p>
           <div className="price">
             <span>Price</span>
-            <h2>1 ETH</h2>
+            <h2>
+              {ethers.utils.formatUnits(nft?.price.toString() || 11, 'ether')}{' '}
+              ETH
+            </h2>
           </div>
           <button onClick={() => navigate('/nfts/1')}>Buy Nft</button>
         </div>
       </div>
-      {/* <div className="popular-nfts">
-        <div className="title">
-          <span className="sub-title">
-            <h4>Popular Nfts</h4> <Link to="/explore">View all Nfts</Link>
-          </span>
-          <div className="divider"></div>
-        </div>
-
-        <div className="nfts">
-          {nfts.map(nft => (
-            <NftCard nft={nft} />
-          ))}
-        </div>
-      </div> */}
-
-      {/* <div className="about">
-        <h1>Project</h1>
-        <span className="about-desc">
-          <h3>
-            This project was built for the HackMoney 2022 Hackathon by ETHGlobal
-          </h3>
-          <h2>Notable Sponsors used</h2>
-        </span>
-
-        <div className="sponsors">
-          {sponsors.map(sponsor => (
-            <Sponsor sponsor={sponsor} />
-          ))}
-        </div>
-      </div> */}
     </StyledHome>
   );
 }

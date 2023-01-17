@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import AppContext from '../context/AppContext';
 import nftImg from '../assets/images/HM.png';
 import defPic from '../assets/images/bg.png';
+import sanitizeIpfsUrl from '../utils/sanitizeIpfsUrl';
+
 const CollectionCard = ({ collection }) => {
   const { theme } = useContext(AppContext);
   let navigate = useNavigate();
@@ -22,15 +24,20 @@ const CollectionCard = ({ collection }) => {
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
+    variables: {
+      id: `${
+        collection?.owner || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'
+      }`,
+    },
   });
   let userProfile = getProfileData?.profiles[0];
+  console.log('Collection do', collection?.dp, sanitizeIpfsUrl(collection?.dp));
   return (
     <StyledCollectionCard
       theme_={theme}
       onClick={() => navigate('/collections/3')}
     >
-      <img src={nftImg} alt="img" />
+      <img src={sanitizeIpfsUrl(collection?.dp)} alt="img" />
       <div className="nft-desc">
         <span className="title">
           <h3>Encode</h3>
@@ -39,7 +46,7 @@ const CollectionCard = ({ collection }) => {
         <span className="sale">
           <span className="author">
             {' '}
-            <img src={userProfile?.dp || defPic} alt="img" />
+            <img src={sanitizeIpfsUrl(userProfile?.dp) || defPic} alt="img" />
             <small>{userProfile?.name || 'Comrade'}</small>{' '}
           </span>{' '}
           <p>Author</p>

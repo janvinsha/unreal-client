@@ -12,12 +12,20 @@ import AppContext from '../context/AppContext';
 import { pageAnimation } from '../animation';
 import PhotoIcon from '@mui/icons-material/Photo';
 
+const projectId = process.env.REACT_APP_INFURA_PROJECT_ID;
+const projectSecret = process.env.REACT_APP_INFURA_PROJECT_SECRET;
+
+const auth =
+  'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+
 const client = create({
   host: 'ipfs.infura.io',
   port: 5001,
   protocol: 'https',
+  headers: {
+    authorization: auth,
+  },
 });
-
 const CreateCollection = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -39,9 +47,9 @@ const CreateCollection = () => {
     }
 
     let banner = await client.add(cover);
-    let bannerUrl = `https://ipfs.infura.io/ipfs/${banner.path}`;
+    let bannerUrl = `https://unreal-client.infura-ipfs.io/ipfs/${banner.path}`;
     let photo = await client.add(dp);
-    let photoUrl = `https://ipfs.infura.io/ipfs/${photo.path}`;
+    let photoUrl = `https://unreal-client.infura-ipfs.io/ipfs/${photo.path}`;
     console.log('IPFS OBJECT', banner, photo);
     console.log('IPFS UPLOAD FILE BANNERURL', bannerUrl);
 

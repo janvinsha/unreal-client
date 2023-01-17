@@ -309,7 +309,7 @@ const App = () => {
     }
   };
 
-  const buyNft = async id => {
+  const buyNft = async (id, price) => {
     const wallet = await web3Modal.connect();
     const tProvider = new ethers.providers.Web3Provider(wallet);
     try {
@@ -321,7 +321,9 @@ const App = () => {
       );
       setBuyingNft(true);
 
-      let tx = await connectedContract.createMarketSale(id);
+      let tx = await connectedContract.createMarketSale(id, {
+        value: price,
+      });
       // }
 
       setBuyingNft(false);
