@@ -34,10 +34,25 @@ export default function Profile() {
   let tabs = ['Items', 'Collections'];
 
   let userDetails = {};
-  const nfts = [{}];
 
-  const collections = [{}];
+  const POPULAR_COLLECTIONS_QUERY = gql`
+    query GetPopularCollections($owner: String) {
+      collections(first: 8, where: { owner_contains: $owner }) {
+        id
+        collectionId
+        dp
+        owner
+        name
+      }
+    }
+  `;
 
+  const { data: collectionsData } = useQuery(POPULAR_COLLECTIONS_QUERY, {
+    variables: {
+      owner: `${handle || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
+    },
+  });
+  const collections = collectionsData?.collections;
   const GET_PROFILE_QUERY = gql`
     query GetProfile($id: String) {
       profiles(first: 1, where: { profileId_contains: $id }) {
@@ -50,12 +65,32 @@ export default function Profile() {
       }
     }
   `;
+  const USER_NFTS_QUERY = gql`
+    query GetUserNfts($id: String) {
+      marketItems(first: 10, where: { seller_contains: $id, sold: false }) {
+        id
+        tokenId
+        price
+        name
+        image
+      }
+    }
+  `;
+
+  const { data: nftsData } = useQuery(USER_NFTS_QUERY, {
+    variables: {
+      id: `${handle || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
+    },
+  });
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
     variables: { id: `${handle}` },
   });
   console.log('THIS IS THE PROFILE DATA', getProfileData?.profiles[0]);
   let foundUser = getProfileData?.profiles[0];
+
+  console.log('THIS IS THE USER NFTS', nftsData);
+  const nfts = nftsData?.marketItems;
   return (
     <StyledProfile
       exit="exit"
@@ -130,8 +165,8 @@ export default function Profile() {
           </div>
           <div className="cards">
             {activeTab === 'Items'
-              ? nfts.map(nft => <NftCard nft={nft} />)
-              : collections.map(collection => (
+              ? nfts?.map(nft => <NftCard nft={nft} />)
+              : collections?.map(collection => (
                   <CollectionCard collection={collection} />
                 ))}
           </div>

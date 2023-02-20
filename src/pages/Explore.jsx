@@ -22,7 +22,7 @@ export default function Explore() {
 
   const POPULAR_NFTS_QUERY = gql`
     query GetPopularNfts {
-      marketItems(first: 8) {
+      marketItems(first: 50, where: { sold: false }) {
         id
         tokenId
         price

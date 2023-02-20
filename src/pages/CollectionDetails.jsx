@@ -25,11 +25,10 @@ export default function CollectionDetails() {
 
   const tabs = ['Items'];
   const [activeTab, setActiveTab] = useState('Items');
-  const nfts = [{}];
 
   const GET_COLLECTION_QUERY = gql`
     query GetCollectionNfts($id: String) {
-      collections(first: 1, where: { tokenId: $id }) {
+      collections(first: 1, where: { collectionId_contains: $id }) {
         id
         name
         description
@@ -42,12 +41,27 @@ export default function CollectionDetails() {
     variables: { id: collectionId },
   });
 
-  let foundCollection = {
-    name: 'Encode',
-    description: 'Build the future of Finance',
-    owner: '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39',
-  };
+  let foundCollection = resultData;
 
+  const GET_NFT_QUERY = gql`
+    query GetNfts($id: String) {
+      marketItems(first: 10, where: { collection_contains: $id, sold: false }) {
+        id
+        tokenId
+        price
+        name
+        image
+      }
+    }
+  `;
+
+  const { data: nftsData } = useQuery(GET_NFT_QUERY, {
+    //TODO: change the id to collectionsID
+    variables: { id: collectionId },
+  });
+
+  let nfts = nftsData?.marketItems;
+  console.log('THIS ARE THE NFTS', nfts);
   const GET_PROFILE_QUERY = gql`
     query GetProfile($id: String) {
       profiles(first: 1, where: { profileId_contains: $id }) {
@@ -61,7 +75,10 @@ export default function CollectionDetails() {
   `;
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
-    variables: { id: `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39` },
+    variables: {
+      id:
+        foundCollection?.owner || `0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39`,
+    },
   });
   let userProfile = getProfileData?.profiles[0];
   return (
@@ -104,7 +121,7 @@ export default function CollectionDetails() {
           </span>
         </div>
         <span className="tabs">
-          {tabs.map((tab, index) => (
+          {tabs?.map((tab, index) => (
             <span
               className={`tab ${activeTab === tab && 'active'}`}
               key="index"
@@ -117,8 +134,8 @@ export default function CollectionDetails() {
         </span>
 
         <div className="nfts">
-          {nfts.map(nft => (
-            <NftCard nft={nft} />
+          {nfts?.map((nft, x) => (
+            <NftCard nft={nft} key={x} />
           ))}
         </div>
       </div>

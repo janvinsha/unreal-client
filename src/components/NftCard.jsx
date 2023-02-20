@@ -34,12 +34,15 @@ const NftCard = ({ nft }) => {
   console.log('nftdata', userProfile);
   console.log('nft do', nft?.image, sanitizeIpfsUrl(nft?.image));
   return (
-    <StyledNftCard theme_={theme} onClick={() => navigate('/nfts/1')}>
+    <StyledNftCard
+      theme_={theme}
+      onClick={() => navigate(`/nfts/${nft?.tokenId}`)}
+    >
       <img src={sanitizeIpfsUrl(nft?.image)} alt="img" />
       <div className="nft-desc">
         <span className="nft_title">
           <h3>{nft?.name}</h3>{' '}
-          <p>{ethers.utils.formatUnits(nft?.price.toString(), 'ether')} ETH</p>
+          <p>{ethers.utils.formatUnits(nft?.price?.toString(), 'ether')} ETH</p>
         </span>
 
         <span className="nft_sale">

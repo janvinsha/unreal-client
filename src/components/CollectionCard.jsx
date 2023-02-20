@@ -35,7 +35,7 @@ const CollectionCard = ({ collection }) => {
   return (
     <StyledCollectionCard
       theme_={theme}
-      onClick={() => navigate('/collections/3')}
+      onClick={() => navigate(`/collections/${collection?.collectionId}`)}
     >
       <img src={sanitizeIpfsUrl(collection?.dp)} alt="img" />
       <div className="nft-desc">

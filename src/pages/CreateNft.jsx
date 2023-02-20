@@ -14,11 +14,19 @@ import { Loader } from '../components';
 import AppContext from '../context/AppContext';
 import { pageAnimation } from '../animation';
 import PhotoIcon from '@mui/icons-material/Photo';
+const projectId = process.env.REACT_APP_INFURA_PROJECT_ID;
+const projectSecret = process.env.REACT_APP_INFURA_PROJECT_SECRET;
+
+const auth =
+  'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 const client = create({
   host: 'ipfs.infura.io',
   port: 5001,
   protocol: 'https',
+  headers: {
+    authorization: auth,
+  },
 });
 const CreateNft = ({ show, onClose }) => {
   const [name, setName] = useState('');
@@ -101,9 +109,10 @@ const CreateNft = ({ show, onClose }) => {
   };
 
   const GET_USER_COLLECTIONS_QUERY = gql`
-    query GetUserCollections($owner: Bytes) {
+    query GetUserCollections($owner: String) {
       collections(where: { owner_contains: $owner }) {
         name
+        collectionId
       }
     }
   `;
@@ -112,7 +121,7 @@ const CreateNft = ({ show, onClose }) => {
   });
 
   console.log('HERE ARE THE USERS COLLECTIONS', data);
-  let foundCollections = [];
+  let foundCollections = [{}];
 
   let collections = data?.collections;
   let arrayWork = () => {
@@ -120,14 +129,14 @@ const CreateNft = ({ show, onClose }) => {
       for (let x of collections) {
         let tempObject = {
           label: x?.name,
-          value: x?.name,
+          value: x?.collectionId,
         };
         foundCollections.push(tempObject);
       }
     }
   };
   arrayWork();
-
+  console.log('THIS IS THE FOUND COLLECTION', foundCollections);
   return (
     <StyledCreateNft
       exit="exit"
@@ -138,7 +147,7 @@ const CreateNft = ({ show, onClose }) => {
     >
       <Loader visible={creatingItem} />
       <motion.div className="page_header">
-        <h2 className="page_title text-gradient">Create new Item</h2>
+        <h2 className="page_title text-gradient">Create and List Item</h2>
       </motion.div>
       <motion.div className="page_container">
         <div className="upload_div">
@@ -209,9 +218,6 @@ const CreateNft = ({ show, onClose }) => {
               asterik={true}
               className="border"
               options={foundCollections}
-              defaultValue={
-                (foundCollections && foundCollections[0]?.value) || ''
-              }
               onChange={e => setCollection(e.target.value)}
               theme={theme}
               required
@@ -226,6 +232,8 @@ const CreateNft = ({ show, onClose }) => {
               onChange={e => setPrice(parseInt(e.target.value))}
               required
               theme={theme}
+              step="0.01"
+              min={0}
             />
 
             <TagInput

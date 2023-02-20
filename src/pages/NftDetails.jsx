@@ -28,7 +28,7 @@ import { pageAnimation } from '../animation';
 
 import defPic from '../assets/images/HM.png';
 import ShareIcon from '@mui/icons-material/Share';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
 import sanitizeIpfsUrl from '../utils/sanitizeIpfsUrl';
 
 const SimpleChatMessage = new protobuf.Type('SimpleChatMessage')
@@ -46,9 +46,6 @@ export default function NftDetails() {
   const [text, setText] = useState('');
   const tabs = ['Description', 'History'];
   const [activeTab, setActiveTab] = useState('Description');
-  let comments = [];
-
-  let COVALENT_KEY = 'ckey_9ebee12fd55e4e05b33496e5c7e';
 
   let [nftData, setNftData] = useState();
   let data;
@@ -182,7 +179,7 @@ export default function NftDetails() {
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
     variables: {
-      id: `${nft?.owner || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
+      id: `${nft?.seller || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
     },
   });
   let userProfile = getProfileData?.profiles[0];
@@ -224,7 +221,7 @@ export default function NftDetails() {
           <div>
             {activeTab == 'Description' ? (
               <div className="descr">
-                <p>Build the future of Finance</p>
+                <p>{nft?.description || 'Heeyyaaahhh'}</p>
                 <span className="price">
                   <span>Price</span>
                   <h2>
@@ -237,7 +234,9 @@ export default function NftDetails() {
                 </span>
                 <span className="price">
                   <span>Collection</span>{' '}
-                  <Link to="/collections/2">Encode</Link>
+                  <Link to={`/collections/${nft?.collection || 2}`}>
+                    Encode
+                  </Link>
                 </span>
                 <div className="buy">
                   <button onClick={() => buyNft(nft?.tokenId, nft?.price)}>
