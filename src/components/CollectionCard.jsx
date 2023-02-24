@@ -40,7 +40,7 @@ const CollectionCard = ({ collection }) => {
       <img src={sanitizeIpfsUrl(collection?.dp)} alt="img" />
       <div className="nft-desc">
         <span className="title">
-          <h3>Encode</h3>
+          <h3>{collection?.name}</h3>
         </span>
 
         <span className="sale">

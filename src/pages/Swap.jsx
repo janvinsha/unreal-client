@@ -153,7 +153,9 @@ function DEX() {
         return;
       }
 
-      const tokenAmount = new BigNumber(amount).times(10 ** fromToken?.decimal);
+      const tokenAmount = new BigNumber(amount).times(
+        10 ** fromToken?.decimals
+      );
 
       // Setup transfer parameters
       const transferParams = {
@@ -183,7 +185,6 @@ function DEX() {
       setSwapping(false);
     } catch (error) {
       setSwapping(false);
-      alert('An error occurred, try again');
       console.log(error, 'EnCOUNTERED AN ERROR');
     }
   };

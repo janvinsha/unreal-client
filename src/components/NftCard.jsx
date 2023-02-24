@@ -27,7 +27,7 @@ const NftCard = ({ nft }) => {
 
   const { data: getProfileData } = useQuery(GET_PROFILE_QUERY, {
     variables: {
-      id: `${nft?.owner || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
+      id: `${nft?.seller || '0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39'}`,
     },
   });
   let userProfile = getProfileData?.profiles[0];
